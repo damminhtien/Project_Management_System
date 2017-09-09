@@ -1,0 +1,225 @@
+<% 	var l = rs.rows.length;
+	var max1 = -1, max2 = -2, max3 = -3, max4 = -4, max5 = -5;
+	var i1 = l-1, i2 = l-2, i3 = l-4, i4 = l-5, i5 = l-6;
+	for(let i=l-10;i<=l-1;i++){
+		let n = parseInt(rs.rows[i].luotxem, 10);
+		if(n >= max1){
+			max5 = max4; i5 = i4;
+			max4 = max3; i4 = i3;
+			max3 = max2; i3 = i2;
+			max2 = max1; i2 = i1;
+			max1 = n; i1 = i;
+		}
+		else if(n >= max2){
+			max5 = max4; i5 = i4;
+			max4 = max3; i4 = i3;
+			max3 = max2; i3 = i2;
+			max2 = n; i2 = i;
+		}
+		else if(n >= max3){
+			max5 = max4; i5 = i4;
+			max4 = max3; i4 = i3; 
+			max3 = n; i3 = i;
+		}
+		else if(n >= max4){
+			max5 = max4; i5 = i4;
+			max4 = n; i4 = i;
+		}
+		else if(n >= max5){
+			max5 = n; i5 = i;
+		}
+	}
+%>
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>He thong quan ly do an</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./css/trangchu.css">
+    <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
+</head>
+
+<body>
+    <div id="div_navbar">
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">QLDA.soict.edu.vn</a>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">Trang chủ</a></li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Khoa học máy tính<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Artifical Intelligent</a></li>
+                                <li><a href="#">Data Science</a></li>
+                                <li><a href="#">Machine Learing</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Công nghệ phần mềm<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Lập trình web</a></li>
+                                <li><a href="#">Lập trình Android</a></li>
+                                <li><a href="#">Machine Learing</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Hệ thống thông tin<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Lập trình web</a></li>
+                                <li><a href="#">Lập trình Android</a></li>
+                                <li><a href="#">Machine Learing</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Kỹ thuật máy tính<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Lập trình web</a></li>
+                                <li><a href="#">Lập trình Android</a></li>
+                                <li><a href="#">Machine Learing</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Truyền thông và mạng MT<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Lập trình web</a></li>
+                                <li><a href="#">Lập trình Android</a></li>
+                                <li><a href="#">Machine Learing</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">An toàn thông tin<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Lập trình web</a></li>
+                                <li><a href="#">Lập trình Android</a></li>
+                                <li><a href="#">Machine Learing</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div id="div_name_web">
+        <div class="container">
+            <img class="img-responsive img" src="./image/logo_soict.png" alt="logo_soict.png" width="50vmin">
+            <h1 class="text-center">HỆ THỐNG QUẢN LÝ ĐỒ ÁN</h1>
+        </div>
+    </div>
+    <div id="div_search_tool">
+        <h4 class="text-center">TÌM KIẾM TÀI LIỆU</h4>
+        <form>
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search" id="inputSearch">
+                <div class="input-group-btn">
+                    <button class="btn btn-default" type="submit" id="btnSearch">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="div_most_recent">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8" id="div_content">
+                	<% for(var i=l-1;i>=l-8;i--){ %>
+						<div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"><%= rs.rows[i].tieude %></h4>
+                        </div>
+                        <div class="panel-body">
+                            <%= rs.rows[i].tomtatnoidung %>
+                        </div>
+                        <div class="panel-footer">
+                        	<span class="glyphicon glyphicon-eye-open"></span>: <%= rs.rows[i].luotxem %><br/>
+                        	<span class="glyphicon glyphicon-time"></span> : <%= rs.rows[i].ngaygioupload %><br/>
+                            <span class="glyphicon glyphicon-tag"></span> : 
+                            <span>tag1, tag2</span>
+                        </div>
+                    	</div>
+                	<% }; %>
+                </div>
+                <div class="col-md-4" id="div_info">
+                	<div class="panel panel-info">
+                		<div class="panel-heading">
+                			<h4 class="panel-title">Bài viết nổi bật</h4>
+                		</div>
+                		<div class="panel-body">
+                			<ol>
+                				<li> <%= rs.rows[i1].tieude %></li>
+                				<li> <%= rs.rows[i2].tieude %></li>
+                				<li> <%= rs.rows[i3].tieude %></li>
+                				<li> <%= rs.rows[i4].tieude %></li>
+                				<li> <%= rs.rows[i5].tieude %></li>
+                			</ol>
+                		</div>
+                	</div>
+                	<div class="panel panel-default">
+                		<div class="panel-heading">
+                			<h4 class="panel-title">Đồ án nổi bật</h4>
+                		</div>
+                		<div class="panel-body">
+                			<div class="container">
+                				<div class="row">
+                					<div class="col-md-6">
+                						<div class="do_an_noi_bat" id="doannoibat1">
+                							Do an 1
+                						</div>
+                						<div class="do_an_noi_bat" id="doannoibat2">
+	                						Do an 2
+	                					</div>
+	                					<div class="do_an_noi_bat" id="doannoibat2">
+	                						Do an 2
+	                					</div>
+	                					<div class="do_an_noi_bat" id="doannoibat2">
+	                						Do an 2
+	                					</div>
+	                				</div>
+                					<div class="col-md-6">
+                						<div class="do_an_noi_bat" id="doannoibat1">
+                							Do an 1
+	                					</div>
+	                					<div class="do_an_noi_bat" id="doannoibat2">
+	                						Do an 2
+	                					</div>
+	                					<div class="do_an_noi_bat" id="doannoibat2">
+	                						Do an 2
+	                					</div>
+	                					<div class="do_an_noi_bat" id="doannoibat2">
+	                						Do an 2
+	                					</div>
+                					</div>
+                				</div>
+                			</div>
+                		</div>
+                	</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="div_footer">
+  		Copy right DMT
+    </div>
+    <script src="./js/trangchu.js"></script>
+</body>
+
+</html>

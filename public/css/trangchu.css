@@ -1,0 +1,96 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body{
+	background: #dbdbdb;
+}
+
+#div_name_web {
+    width: 100%;
+}
+
+#div_name_web img{
+	display: inline;
+	float: right;
+}
+
+#div_name_web h1{
+	font-size: 5vmin;
+	font-family: 'Lora', serif;
+}
+
+#div_navbar{
+	width: 100%;
+	font-size: 12px;
+}
+
+#div_search_tool{
+	padding: 5vmin;
+	width: 100%;
+}
+
+#div_search_tool form{
+	padding: 0px;
+	width: 50%;
+	border: 2px solid black;
+	border-radius: 25px;
+	margin: auto;
+}
+
+#div_search_tool form input{
+	border-radius: 25px 0px 0px 25px;
+}
+
+#div_search_tool form button{
+	border-radius: 0px 25px 25px 0px;
+}
+
+#div_most_recent{
+	padding: 3vmin;
+	width: 100%;
+	min-height: 100px;
+}
+
+div .container{
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+div .row{
+	margin: 0;
+	padding: 0;
+}
+
+#div_content{
+	padding: 1vmin;
+}
+
+#div_info{
+	padding: 1vmin;
+}
+
+div .panel{
+	padding: 0;
+	width: 100%;
+}
+
+#div_footer{
+	height: 50px;
+	background: black;
+	color: white;
+}
+
+div .col-md-6{
+	padding: 0;
+}
+
+div .do_an_noi_bat{
+	height: 35vmin;
+	border: 1px solid black;
+	border-radius: 10px;
+	padding: 1vmin;
+	margin: 1vmin;
+}
