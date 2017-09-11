@@ -1,7 +1,5 @@
 var express = require('express');
 var app = express();
-var multer  = require('multer');
-var upload = multer({ dest: 'uploads/' });
 
 app.use(express.static("./public"));
 app.set("view engine","ejs");
@@ -19,6 +17,9 @@ const pool = new pg.Pool({
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
+var server = require("http").Server(app);
+server.listen(process.env.PORT || 3000);
+
 app.get('/', function(req, res){
 	pool.connect((err, client, release) => {
         if (err) {
@@ -35,6 +36,3 @@ app.get('/', function(req, res){
     })
 });
 
-app.listen(2211, function(){
-	console.log("Server connected");
-});
