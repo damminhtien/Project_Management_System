@@ -94,3 +94,7 @@ div .do_an_noi_bat{
 	padding: 1vmin;
 	margin: 1vmin;
 }
+
+.modal-body{
+	padding: 30px;
+}
