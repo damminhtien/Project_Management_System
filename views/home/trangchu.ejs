@@ -1,0 +1,82 @@
+<% 	var l = thongbao.rows.length;
+	var max1 = -1, max2 = -2, max3 = -3, max4 = -4, max5 = -5;
+	var i1 = l-1, i2 = l-2, i3 = l-4, i4 = l-5, i5 = l-6;
+	for(let i=l-10;i<=l-1;i++){
+		let n = parseInt(thongbao.rows[i].luotxem, 10);
+		if(n >= max1){
+			max5 = max4; i5 = i4;
+			max4 = max3; i4 = i3;
+			max3 = max2; i3 = i2;
+			max2 = max1; i2 = i1;
+			max1 = n; i1 = i;
+		}
+		else if(n >= max2){
+			max5 = max4; i5 = i4;
+			max4 = max3; i4 = i3;
+			max3 = max2; i3 = i2;
+			max2 = n; i2 = i;
+		}
+		else if(n >= max3){
+			max5 = max4; i5 = i4;
+			max4 = max3; i4 = i3; 
+			max3 = n; i3 = i;
+		}
+		else if(n >= max4){
+			max5 = max4; i5 = i4;
+			max4 = n; i4 = i;
+		}
+		else if(n >= max5){
+			max5 = n; i5 = i;
+		}
+	}
+%>
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hệ thống quản lý đồ án</title>
+    <link rel="SHORTCUT ICON" href="./images/SoICT_ logo.ico"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./css/trangchu.css">
+    <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
+</head>
+
+<body>
+    <div id="div_navbar">
+        <% include navbar %>
+    </div>
+    <div id="div_name_web">
+        <div class="container">
+            <img class="img-responsive img" src="./images/logo_soict.png" alt="logo_soict.png" width="50vmin">
+            <h1 class="text-center">HỆ THỐNG QUẢN LÝ ĐỒ ÁN</h1>
+        </div>
+    </div>
+    <div id="div_search_tool">
+        <h4 class="text-center">TÌM KIẾM TÀI LIỆU</h4>
+        <form>
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search" id="inputSearch">
+                <div class="input-group-btn">
+                    <button class="btn btn-default" type="submit" id="btnSearch">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="div_most_recent">
+        <% include most_recent %>
+    </div>
+    <div id="div_footer">
+  		Copy right DMT
+    </div>
+    <script src="./js/trangchu.js"></script>
+</body>
+
+</html>
