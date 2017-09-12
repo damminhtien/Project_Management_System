@@ -12,7 +12,7 @@ app.use(session({
 }));
  
 app.use(flash());
-var connect = require('connect');
+// var connect = require('connect');
 var cookieParser = require('cookie-parser');
 
 app.use(express.static("./public"));
