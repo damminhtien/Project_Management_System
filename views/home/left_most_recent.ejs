@@ -1,0 +1,26 @@
+<% var dangxem=1; %>
+<div class="col-md-8" id="div_content">
+    <% for(var i=0;i<=7;i++){ %>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4 class="panel-title"><span id="postTitle<%=i%>"><%= thongbao.rows[i].tieude %></span></h4>
+            </div>
+            <div class="panel-body">
+                <span id="postBody<%=i%>"><%= thongbao.rows[i].tomtatnoidung %></span>
+            </div>
+            <div class="panel-footer">
+                <span class="glyphicon glyphicon-eye-open"></span>:
+                <span id="postView<%=i%>"><%= thongbao.rows[i].luotxem %></span>
+                <br/>
+                <span class="glyphicon glyphicon-time"></span> :
+                <span id="postDate<%=i%>"><%= thongbao.rows[i].ngaygioupload %></span>
+                <br/>
+                <span class="glyphicon glyphicon-tag"></span> :
+                <span id="postTag<%=i%>">tag1, tag2</span>
+            </div>
+        </div>
+        <% }; %>
+        <button class="btn btn-default" id="btnPagePrev"><span class="glyphicon glyphicon-chevron-left"></span></button>
+        <button class="btn btn-default" id="btnPageNext"><span class="glyphicon glyphicon-chevron-right"></span></button>
+        <button class="btn btn-default" id="btnPage1">Mới nhất</button>
+</div>

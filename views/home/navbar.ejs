@@ -61,7 +61,11 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <% if(usr != null){ %>
+                <li><a href= "../sinhvien/id=<%=usr.user.id%>"  ><span class="glyphicon glyphicon-user"></span> <%= usr.user.ten %></a></li> 
+                <% } else { %>
                 <li><a href="../login"><span class="glyphicon glyphicon-log-in"></span> Đăng nhập</a></li>
+                <% } %>
             </ul>
         </div>
     </div>
