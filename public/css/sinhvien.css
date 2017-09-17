@@ -1,0 +1,18 @@
+*{
+	padding: 0;
+	margin: 0;
+}	
+
+#wallpaper{
+	width: 100%;
+	background-color: grey;
+	color: white;
+}
+
+#ava{
+	padding-top: 10px;
+	display: block;
+    margin: 0 auto;
+    height: 20vmin;
+    width: 20vmin;
+}

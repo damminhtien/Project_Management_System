@@ -44,7 +44,7 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Truyền thông và mạng MT<span class="caret"></span></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Truyền thông MMT<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="#">Lập trình web</a></li>
                         <li><a href="#">Lập trình Android</a></li>
@@ -62,7 +62,8 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <% if(usr != null){ %>
-                <li><a href= "../sinhvien/id=<%=usr.user.id%>"  ><span class="glyphicon glyphicon-user"></span> <%= usr.user.ten %></a></li> 
+                <li><a href= "../sinhvien"  ><span class="glyphicon glyphicon-user"></span> <%= usr.user.ten %></a></li> 
+                <li><a href="../logout">Logout</a></li>
                 <% } else { %>
                 <li><a href="../login"><span class="glyphicon glyphicon-log-in"></span> Đăng nhập</a></li>
                 <% } %>
