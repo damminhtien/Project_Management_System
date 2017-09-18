@@ -9,7 +9,7 @@ var fs = require('fs');
 
 app.use(session({
   secret: 'keyboard cat',
-  cookie: { maxAge: 60000 },
+  cookie: { maxAge: 60*1000*15 },
   saveUninitialized: true,
   resave: true
 }));

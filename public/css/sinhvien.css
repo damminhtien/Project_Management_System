@@ -1,13 +1,22 @@
 *{
 	padding: 0;
 	margin: 0;
+	cursor: url('../images/navigation.png'), auto;
 }	
+
+.text-center{
+	margin: 20px;
+}
 
 #wallpaper{
 	width: 100%;
 	background-color: grey;
 	color: white;
+	background: url('http://orig10.deviantart.net/e24e/f/2005/257/8/c/stars_1_.gif');
+	background-size: cover;
 }
+
+
 
 #ava{
 	padding-top: 10px;
@@ -15,4 +24,80 @@
     margin: 0 auto;
     height: 20vmin;
     width: 20vmin;
+}
+
+.container{
+	padding: 0;
+	margin: auto;
+
+	width: 100%;
+}
+
+.col-md-3{
+	background-size: cover;
+	padding: 0;
+	padding-left: 15px;
+	background-color: #cccccc;
+	height: 100%;
+}
+
+.col-md-9{
+	background-color: #5a0cad;
+	padding: 0;
+	color: white;
+	font-size: 14px;
+	letter-spacing: 1px;
+	min-height: 800px;
+}
+
+nav.navbar.navbar-inverse{
+	margin: 0;
+}
+
+.container-fluid{
+	margin: 0;	
+}
+
+table{
+	width: auto;	
+}
+
+#table-right td{
+	height: 60px;
+	margin: auto;
+	padding-top: 20px;
+	text-align: center;
+}
+
+#table-right th{
+	text-align: center;
+	background-color: #39353d;
+	color: white;
+	font-size: 16px;
+	letter-spacing: 1px;
+}
+
+#table-right tr:hover td{
+	background-color: #a14fd0;
+	transition: 0.5s;
+}
+
+#table-right tr:hover tr{
+	border: 1px solid black;
+}
+
+#table-left .theader{
+	background-color: #39353d;
+	color: white;
+}
+
+#table-left tr:hover td{
+	background-color: #a14ff2;
+	color: white; 
+	transition: 0.5s;
+}
+
+a:hover{
+	cursor: url('../images/index-finger-cursor.png'), auto;
+	text-decoration: none;
 }

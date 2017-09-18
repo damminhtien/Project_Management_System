@@ -12,10 +12,20 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="./css/sinhvien.css">
 </head>
+
 <body>
-	<div class="container" id="wallpaper">
-	    <img src="http://kenh14cdn.com/2017/34817672211-ba1f723cfd-k-1496912099026.jpg" alt="ava" id="ava" class="img-circle img-responsive">
-	    <h1 class="text-center"><%= usr.ten%></h1>
-	    <h4 class="text-center"><i>"Trăng dưới nước là trăng trên trời / Người trước mặt là người trong tim"</i></h4>
-	</div>
+    <div class="container" id="wallpaper">
+        <div class="row">
+            <img src="http://kenh14cdn.com/2017/34817672211-ba1f723cfd-k-1496912099026.jpg" alt="ava" id="ava" class="img-circle img-responsive">
+            <h1 class="text-center"><%= usr.ten%></h1>
+            <h4 class="text-center"><i>"Thích du lịch, đọc sách, nghe nhạc và khám phá thế giới"</i></h4>
+        </div>
+    </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <% include sinhvien-left %>
+            <% include sinhvien-right %>
+        </div>
+    </div>
 </body>
