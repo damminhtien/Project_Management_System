@@ -13,7 +13,7 @@ $("document").ready(function(){
 	$("#btnPageNext").click(function(){
 		post++;
 		var url = "/recent/post="+post+".json";
-		$.get(url).then(function(data,){
+		$.get(url).then(function(data){
   			for(var i=0; i<8; i++){
   				var postTitle = "#postTitle" + i,
   				 	postBody = "#postBody" + i,
@@ -31,7 +31,7 @@ $("document").ready(function(){
 		if(post>=1){
 			post--;
 			var url = "/recent/post="+post+".json";
-			$.get(url).then(function(data,){
+			$.get(url).then(function(data){
 	  			for(var i=0; i<8; i++){
 	  				var postTitle = "#postTitle" + i,
 	  				 	postBody = "#postBody" + i,
@@ -49,7 +49,7 @@ $("document").ready(function(){
 	$("#btnPage1").click(function(){
 		post = 0;
 		var url = "/recent/post="+post+".json";
-		$.get(url).then(function(data,){
+		$.get(url).then(function(data){
 				for(var i=0; i<8; i++){
 					var postTitle = "#postTitle" + i,
 					 	postBody = "#postBody" + i,

@@ -11,10 +11,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="./css/sinhvien.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 </head>
 
 <body>
-    <div class="container" id="wallpaper">
+    <div class="container animated fadeInDown" id="wallpaper">
         <div class="row">
             <img src="http://kenh14cdn.com/2017/34817672211-ba1f723cfd-k-1496912099026.jpg" alt="ava" id="ava" class="img-circle img-responsive">
             <h1 class="text-center"><%= usr.ten%></h1>
@@ -28,4 +29,5 @@
             <% include sinhvien-right %>
         </div>
     </div>
+    <script src="./js/sinhvien.js"></script>
 </body>

@@ -39,7 +39,7 @@ const pool = new pg.Pool({
 var server = require("http").Server(app);
 server.listen(process.env.PORT || 2211);
 
-
+// var database = require(__dirname + '/models/database.js');
 
 app.get('/', function(req, res){
 	pool.connect((err, client, release) => {
@@ -52,8 +52,6 @@ app.get('/', function(req, res){
             	res.end();
                 return console.error('Error executing query', err.stack)
             }
-            // rs.thongbao = result;
-            // console.log(rs);
             res.render('./home/trangchu', {thongbao: result, usr: req._passport.session});
         })  
     })
@@ -79,7 +77,19 @@ app.get('/sinhvien', function(req, res){
                 res.end();
                 return console.error('Error executing query', err.stack)
             }
-            res.render('./sinhvien/sinhvien', {usr: req.session.passport.user});
+            // console.log(req.session.passport.user);
+            if(req.session.passport.user.doan.length >= 1){
+                req.session.passport.user.doan.forEach(function(da){
+                    pool.connect((err, client, release) =>{client.query('SELECT * FROM '+ da+' WHERE '+da+'.uploadby='+req.session.passport.user.id, (err, result) => {
+                        release();
+                        if (err) {
+                            res.end();
+                        }
+                        res.render('./sinhvien/sinhvien', {usr: req.session.passport.user, da:result.rows});
+                    })  
+                    })
+                });
+            } 
         })  
         })
     }
@@ -152,7 +162,6 @@ passport.deserializeUser(function(user, done) {
         client.query('SELECT * FROM sinhvien', (err, result) => {
             release();
             if (err) {
-                res.end();
                 return console.error('Error executing query', err.stack)
             }
             result.rows.forEach(function(usr){
@@ -183,11 +192,42 @@ app.get("/recent/post=:id.json", function(req, res){
     })
 });
 
-// function checkAuthentication(req,res,next){
-//     if(req.isAuthenticated()){
-//         //if user is loged in, req.isAuthenticated() will return true 
-//         next();
-//     } else{
-//         res.redirect("/login");
-//     }
-// }
+app.get("/da/:name/byid=:id", function(req, res){
+    var name = req.params.name;
+    var id = parseInt(req.params.id);
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query('SELECT * FROM '+ name+' WHERE '+ name+ '.uploadby ='+ id, (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.send(result.rows);
+        })  
+    })
+});
+
+app.get("/giangvien/id=:id", function(req, res){
+    var id = parseInt(req.params.id);
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query('SELECT * FROM giangvien WHERE id ='+ id, (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.send(result.rows);
+        })  
+    })
+});
+
+
+
+
+
