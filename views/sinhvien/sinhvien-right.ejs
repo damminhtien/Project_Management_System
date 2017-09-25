@@ -1,0 +1,63 @@
+<div class="col-md-9">
+    <nav class="navbar navbar-inverse animated fadeInRight">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../"><span class="glyphicon glyphicon-home"></span> Trang chủ</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#"><span class="glyphicon glyphicon-certificate"></span> Thông tin đồ án</a></li>
+                    <li><a href="/doancuatoi"><span class="glyphicon glyphicon-file"></span> Đồ án của tôi</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="../logout"><span class="glyphicon glyphicon-log-in"></span> Đăng xuất</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="table-right" class="table-responsive animated bounceInUp">
+        <table class="table table-bordered" id="thongtindoan">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Kỳ</th>
+                    <th>Tên học phần</th>
+                    <th>Tên đề tài</th>
+                    <th>Bộ môn</th>
+                    <th>Giảng viên HD</th>
+                    <th>Thông tin giảng viên</th>
+                </tr>
+            </thead>
+            <tbody>
+                <h1 id="numDA" style="display: none;"><%= usr.doan.length %></h1>
+                <% da.forEach(function(data,index){ %>
+                    <tr id="thongtincoban<%=index%>">
+                        <td><%=index+1%></td>
+                        <td>Time</td>
+                        <td><%= usr.doan[index] %></td>
+                        <td><%= data.tendetai %></td>
+                        <td><span id='bomon<%=index%>'></span></td>
+                        <td><h1 id='idGV<%=index%>' style="display: none;"><%=data.huongdan%></h1><span id="giangvienhuongdan<%=index%>"></span></td>
+                        <td><span id="thongtingiangvien<%=index%>"></span></td>
+                    </tr>
+                    <tr id="thongtinchitiet<%=index%>" style="background-color: #5a0c90;">
+                        <td colspan="7">
+                            <ul class="text-left" style="padding-left: 30px;">
+                                <li>Đã hoàn thành <span class="glyphicon glyphicon-ok-sign"></span> : <%= data.hoanthanh %></li>
+                                <li>Xem tài liệu <span class="glyphicon glyphicon-download"></span> : <%= data.duongdan %></li>
+                                <li>Điểm <span class="glyphicon glyphicon-flash"></span> : <%= data.diem %></li>
+                                <li>Star <span class="glyphicon glyphicon-star"></span> : <%= data.star %></li>
+                                <li>Thời gian tải lên <span class="glyphicon glyphicon-upload"></span> : <%= data.time %></li>
+                            </ul>
+                        </td> 
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</div>

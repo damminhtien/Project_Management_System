@@ -16,7 +16,7 @@ app.use(session({
  
 app.use(flash());
 var cookieParser = require('cookie-parser');
-
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(express.static("./public"));
 app.set("view engine","ejs");
 app.set("views","./views");
@@ -99,9 +99,45 @@ app.get('/sinhvien', function(req, res){
     
 });
 
-    app.get('/da', function(req, res){
-    var filePath = "/uploads/DA1.pdf";
+app.get("/sinhvien/doimatkhau/:id", function(req, res){
+    var id = req.params.id;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("SELECT password FROM sinhvien WHERE id="+id, (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.render('changepass');
+        })
+    })
+});
 
+app.post("/sinhvien/doimatkhau/:id", urlencodedParser,function(req, res){
+    var id = req.params.id;
+    var newPass0 = req.body.txtNewPassword0;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("UPDATE sinhvien SET password="+newPass0+" WHERE id="+id, (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.redirect("../../sinhvien");
+        })
+    })
+});
+
+
+app.get('/da/id=:id', function(req, res){
+    var id = req.params.id;
+    var filePath = "/uploads/"+id+".pdf";
     fs.readFile(__dirname + filePath , function (err,data){
         res.contentType("application/pdf");
         res.send(data);
