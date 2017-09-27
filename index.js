@@ -100,18 +100,41 @@ app.get('/sinhvien', function(req, res){
 });
 
 app.get("/sinhvien/doimatkhau/:id", function(req, res){
+    res.render('changepass');
+});
+
+app.get("/sinhvien/doithongtin/:id", function(req, res){
     var id = req.params.id;
     pool.connect((err, client, release) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query("SELECT password FROM sinhvien WHERE id="+id, (err, result) => {
+        client.query("SELECT id,ten,lop,khoa,sdt,mail,namsinh FROM sinhvien WHERE id="+id, (err, result) => {
             release();
             if (err) {
                 res.end();
                 return console.error('Error executing query', err.stack)
             }
-            res.render('changepass');
+            res.render('changeinfo', {sv: result.rows[0]});
+        })
+    })
+});
+
+app.post("/sinhvien/doithongtin/:id", function(req, res){
+    var id = req.params.id,
+        sdt = req.body.txtSdt,
+        mail = req.body.txtMail;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("UPDATE sinhvien SET sdt='" +sdt+ "', mail='" +mail+ "' WHERE id="+id, (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.redirect('/sinhvien');
         })
     })
 });
@@ -135,9 +158,10 @@ app.post("/sinhvien/doimatkhau/:id", urlencodedParser,function(req, res){
 });
 
 
-app.get('/da/id=:id', function(req, res){
-    var id = req.params.id;
-    var filePath = "/uploads/"+id+".pdf";
+app.get('/:name/id=:id/view', function(req, res){
+    var id = req.params.id,
+        name = req.params.name;
+    var filePath = "/uploads/"+name+"/"+id+".pdf";
     fs.readFile(__dirname + filePath , function (err,data){
         res.contentType("application/pdf");
         res.send(data);
