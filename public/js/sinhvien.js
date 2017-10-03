@@ -8,9 +8,9 @@ $('document').ready(function(){
         		    url: getGV,
            			type: "GET",
             		success: function(data) {
-                		$('#bomon'+ i).html(data[i].bomon);
-						$('#giangvienhuongdan' + i).html(data[i].ten);
-						$('#thongtingiangvien' + i).html(data[i].sdt + '<br/>' + data[i].mail + '<br/>' + data[i].diachi);
+                		$('#bomon'+ i).html(data[0].bomon);
+						$('#giangvienhuongdan' + i).html(data[0].ten);
+						$('#thongtingiangvien' + i).html(data[0].sdt + '<br/>' + data[0].mail + '<br/>' + data[0].diachi);
             		}
         		});
 		})(i);

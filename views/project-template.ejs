@@ -13,5 +13,174 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-	
+	<div class="container">
+        <div class="row">
+            <div class="col-xs-2">
+                Sắp xếp theo:
+            </div>
+            <div class="col-xs-5">
+                <button id="bomon">Loại đồ án</button>
+            </div>
+            <div class="col-xs-5">
+                <button id="bomon">Bộ môn</button>
+            </div>    
+        </div>
+    </div>
+    <div class="container table-responsive">
+        Đồ án 1:
+        <table border="1" class='table-sm'>
+            <tbody>
+                <tr>
+                    <% for (var i = 0; i < 4; i++) { %>
+                        <td id="tdda1<%=i%>">
+                            <ul>
+                                <li id="da1id<%=i%>">Id: </li>
+                                <li id="da1ten<%=i%>">Tên đề tài: </li>
+                                <li id="da1tacgia<%=i%>">Tác giả:</li>
+                                <li id="da1giangvien<%=i%>">Giảng viên hướng dẫn:</li>
+                                <li id="da1thoigian<%=i%>">Thời gian upload</li>
+                                <li id="da1diem<%=i%>">Điểm:</li>
+                                <li id="da1ghichu<%=i%>">Ghi chú:</li>
+                                <button id="da1taive<%=i%>">Tải về</button>
+                            </ul>
+                        </td>
+                    <%}%>
+                </tr>
+                <tr>
+                    <% for (var i = 4; i < 8; i++) { %>
+                        <td id="tdda1<%=i%>">
+                            <ul>
+                                <li id="da1id<%=i%>">Id: </li>
+                                <li id="da1ten<%=i%>">Tên đề tài: </li>
+                                <li id="da1tacgia<%=i%>">Tác giả:</li>
+                                <li id="da1giangvien<%=i%>">Giảng viên hướng dẫn:</li>
+                                <li id="da1thoigian<%=i%>">Thời gian upload</li>
+                                <li id="da1diem<%=i%>">Điểm:</li>
+                                <li id="da1ghichu<%=i%>">Ghi chú:</li>
+                                <button id="da1taive<%=i%>">Tải về</button>
+                            </ul>
+                        </td>
+                    <%}%>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="container table-responsive">
+        Đồ án 2:
+        <table border="1" class='table-sm'>
+            <tbody>
+                <tr>
+                    <% for (var i = 0; i < 4; i++) { %>
+                        <td id="tdda2<%=i%>">
+                            <ul>
+                                <li id="da2id<%=i%>">Id: </li>
+                                <li id="da2ten<%=i%>">Tên đề tài: </li>
+                                <li id="da2tacgia<%=i%>">Tác giả:</li>
+                                <li id="da2giangvien<%=i%>">Giảng viên hướng dẫn:</li>
+                                <li id="da2thoigian<%=i%>">Thời gian upload</li>
+                                <li id="da2diem<%=i%>">Điểm:</li>
+                                <li id="da2ghichu<%=i%>">Ghi chú:</li>
+                                <button id="da2taive<%=i%>">Tải về</button>
+                            </ul>
+                        </td>
+                    <%}%>
+                </tr>
+                <tr>
+                    <% for (var i = 4; i < 8; i++) { %>
+                        <td id="tdda2<%=i%>">
+                            <ul>
+                                <li id="da2id<%=i%>">Id: </li>
+                                <li id="da2ten<%=i%>">Tên đề tài: </li>
+                                <li id="da2tacgia<%=i%>">Tác giả:</li>
+                                <li id="da2giangvien<%=i%>">Giảng viên hướng dẫn:</li>
+                                <li id="da2thoigian<%=i%>">Thời gian upload</li>
+                                <li id="da2diem<%=i%>">Điểm:</li>
+                                <li id="da2ghichu<%=i%>">Ghi chú:</li>
+                                <button id="da2taive<%=i%>">Tải về</button>
+                            </ul>
+                        </td>
+                    <%}%>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="container table-responsive">
+        Đồ án 3:
+        <table border="1" class='table-sm'>
+            <tbody>
+                <tr>
+                    <% for (var i = 0; i < 4; i++) { %>
+                        <td id="tdda3<%=i%>">
+                            <ul>
+                                <li id="da3id<%=i%>">Id: </li>
+                                <li id="da3ten<%=i%>">Tên đề tài: </li>
+                                <li id="da3tacgia<%=i%>">Tác giả:</li>
+                                <li id="da3giangvien<%=i%>">Giảng viên hướng dẫn:</li>
+                                <li id="da3thoigian<%=i%>">Thời gian upload</li>
+                                <li id="da3diem<%=i%>">Điểm:</li>
+                                <li id="da3ghichu<%=i%>">Ghi chú:</li>
+                                <button id="da3taive<%=i%>">Tải về</button>
+                            </ul>
+                        </td>
+                    <%}%>
+                </tr>
+                <tr>
+                    <% for (var i = 4; i < 8; i++) { %>
+                        <td id="tdda3<%=i%>">
+                            <ul>
+                                <li id="da3id<%=i%>">Id: </li>
+                                <li id="da3ten<%=i%>">Tên đề tài: </li>
+                                <li id="da3tacgia<%=i%>">Tác giả:</li>
+                                <li id="da3giangvien<%=i%>">Giảng viên hướng dẫn:</li>
+                                <li id="da3thoigian<%=i%>">Thời gian upload</li>
+                                <li id="da3diem<%=i%>">Điểm:</li>
+                                <li id="da3ghichu<%=i%>">Ghi chú:</li>
+                                <button id="da3taive<%=i%>">Tải về</button>
+                            </ul>
+                        </td>
+                    <%}%>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="container table-responsive">
+        Đồ án tốt nghiệp:
+        <table border="1" class='table-sm'>
+            <tbody>
+                <tr>
+                    <% for (var i = 0; i < 4; i++) { %>
+                        <td id="tddatn<%=i%>">
+                            <ul>
+                                <li id="datnid<%=i%>">Id: </li>
+                                <li id="datnten<%=i%>">Tên đề tài: </li>
+                                <li id="datntacgia<%=i%>">Tác giả:</li>
+                                <li id="datngiangvien<%=i%>">Giảng viên hướng dẫn:</li>
+                                <li id="datnthoigian<%=i%>">Thời gian upload</li>
+                                <li id="datndiem<%=i%>">Điểm:</li>
+                                <li id="datnghichu<%=i%>">Ghi chú:</li>
+                                <button id="datntaive<%=i%>">Tải về</button>
+                            </ul>
+                        </td>
+                    <%}%>
+                </tr>
+                <tr>
+                    <% for (var i = 4; i < 8; i++) { %>
+                        <td id="tddatn<%=i%>">
+                            <ul>
+                                <li id="datnid<%=i%>">Id: </li>
+                                <li id="datnten<%=i%>">Tên đề tài: </li>
+                                <li id="datntacgia<%=i%>">Tác giả:</li>
+                                <li id="datngiangvien<%=i%>">Giảng viên hướng dẫn:</li>
+                                <li id="datnthoigian<%=i%>">Thời gian upload</li>
+                                <li id="datndiem<%=i%>">Điểm:</li>
+                                <li id="datnghichu<%=i%>">Ghi chú:</li>
+                                <button id="datntaive<%=i%>">Tải về</button>
+                            </ul>
+                        </td>
+                    <%}%>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script src="./js/project-template.js" type="text/javascript" charset="utf-8" async defer></script>
 </body>

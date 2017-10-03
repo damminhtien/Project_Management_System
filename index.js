@@ -64,8 +64,6 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/sinhvien', function(req, res) {
-    // var id = req._parsedUrl.query;
-    // console.log(req.session.passport.user);
     if (req.isAuthenticated()) {
         pool.connect((err, client, release) => {
             if (err) {
@@ -99,6 +97,10 @@ app.get('/sinhvien', function(req, res) {
 app.get("/sinhvien/doimatkhau/:id", function(req, res) {
     res.render('changepass');
 });
+
+app.get("/sinhvien/doanthamkhao", function(req, res){
+    res.render('project-template');
+})
 
 app.get("/sinhvien/doithongtin/:id", function(req, res) {
     var id = req.params.id;
@@ -153,6 +155,23 @@ app.post("/sinhvien/doimatkhau/:id", urlencodedParser, function(req, res) {
         })
     })
 });
+
+app.get("/sinhvien/nguyenvong/:id", function(req, res){
+    var id = req.params.id;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("SELECT doanhientai FROM sinhvien WHERE id =" + id, (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.send( {da: result});
+        })
+    })
+})
 
 
 /* sử dụng chứng thực local, nếu chứng thực ko đc thì gửi mess*/
@@ -259,6 +278,24 @@ app.get("/da/:name/byid=:id", function(req, res) {
         })
     })
 });
+
+app.get("/da/:name/get8from/:num", function(req, res){
+    var name = req.params.name;
+    var num = req.params.num;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query('SELECT * FROM ' + name + '  ORDER BY id DESC OFFSET ' +num*8+ ' LIMIT 8', (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.send(result.rows);
+        })
+    })
+})
 
 app.get('/:name/id=:id/view', function(req, res) {
     var id = req.params.id,
