@@ -168,7 +168,29 @@ app.get("/sinhvien/nguyenvong/:id", function(req, res){
                 res.end();
                 return console.error('Error executing query', err.stack)
             }
-            res.send( {da: result});
+            res.render('student-aspiration', {da: result.rows[0]});
+        })
+    })
+})
+
+app.post("/sinhvien/nguyenvong/:id", function(req, res){
+    var id = req.params.id;
+    var bomon = req.body.bomon;
+    var giangvien = req.body.giangvien;
+    var ghichu = req.body.ghichuTxt;
+    var thoigian = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    console.log(thoigian);
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("INSERT INTO nguyenvong(bysinhvien,bomon,giangvien,ghichu,thoigian) VALUES ('"+ id +"','"+ bomon +"','"+ giangvien +"','"+ ghichu +"','"+ thoigian +"')", (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.redirect('../');
         })
     })
 })
@@ -315,6 +337,23 @@ app.get("/giangvien/id=:id", function(req, res) {
             return console.error('Error acquiring client', err.stack);
         }
         client.query('SELECT * FROM giangvien WHERE id=' + id, (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.send(result.rows);
+        })
+    })
+});
+
+app.get("/giangvien/bomon=:bm", function(req, res) {
+    var bm = req.params.bm;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("SELECT * FROM giangvien WHERE bomon='" + bm+"'", (err, result) => {
             release();
             if (err) {
                 res.end();
