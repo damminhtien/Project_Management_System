@@ -1,5 +1,5 @@
 <% var dangxem=1; %>
-<div class="col-md-8" id="div_content">
+
     <% for(var i=0;i<=7;i++){ %>
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -20,7 +20,6 @@
             </div>
         </div>
         <% }; %>
-        <button class="btn btn-default" id="btnPagePrev"><span class="glyphicon glyphicon-chevron-left"></span></button>
-        <button class="btn btn-default" id="btnPageNext"><span class="glyphicon glyphicon-chevron-right"></span></button>
-        <button class="btn btn-default" id="btnPage1">Mới nhất</button>
-</div>
+        <a href="#div_most_recent"><button class="btn btn-default" id="btnPagePrev"><span class="glyphicon glyphicon-chevron-left"></span></button></a>
+        <a href="#div_most_recent"><button class="btn btn-default" id="btnPageNext"><span class="glyphicon glyphicon-chevron-right"></span></button></a>
+        <a href="#div_most_recent"><button class="btn btn-default" id="btnPage1">Mới nhất</button></a>

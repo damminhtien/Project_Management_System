@@ -63,4 +63,11 @@ $("document").ready(function(){
 				}
 		});
 	})
+	setInterval(getStrTime, 1000);
 });
+
+function getStrTime() {
+    var timeNow = new Date();
+    var strTime = timeNow.getHours() + " : " + timeNow.getMinutes() + " : " + timeNow.getSeconds();
+    $("#timeNow").html('Bây giờ là : ' + strTime);
+}

@@ -82,7 +82,7 @@ app.get('/sinhvien', function(req, res) {
                             if (err) {
                                 res.end();
                             }
-                            res.render('sinhvien/sinhvien',{ usr: req.session.passport.user, da: result.rows });
+                            res.render('sinhvien/sinhvien', { usr: req.session.passport.user, da: result.rows });
                         })
                     })
                 }
@@ -98,7 +98,7 @@ app.get("/sinhvien/doimatkhau/:id", function(req, res) {
     res.render('changepass');
 });
 
-app.get("/sinhvien/doanthamkhao", function(req, res){
+app.get("/sinhvien/doanthamkhao", function(req, res) {
     res.render('project-template');
 })
 
@@ -156,7 +156,7 @@ app.post("/sinhvien/doimatkhau/:id", urlencodedParser, function(req, res) {
     })
 });
 
-app.get("/sinhvien/nguyenvong/:id", function(req, res){
+app.get("/sinhvien/nguyenvong/:id", function(req, res) {
     var id = req.params.id;
     pool.connect((err, client, release) => {
         if (err) {
@@ -168,23 +168,22 @@ app.get("/sinhvien/nguyenvong/:id", function(req, res){
                 res.end();
                 return console.error('Error executing query', err.stack)
             }
-            res.render('student-aspiration', {da: result.rows[0]});
+            res.render('student-aspiration', { da: result.rows[0] });
         })
     })
 })
 
-app.post("/sinhvien/nguyenvong/:id", function(req, res){
+app.post("/sinhvien/nguyenvong/:id", function(req, res) {
     var id = req.params.id;
     var bomon = req.body.bomon;
     var giangvien = req.body.giangvien;
     var ghichu = req.body.ghichuTxt;
     var thoigian = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-    console.log(thoigian);
     pool.connect((err, client, release) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query("INSERT INTO nguyenvong(bysinhvien,bomon,giangvien,ghichu,thoigian) VALUES ('"+ id +"','"+ bomon +"','"+ giangvien +"','"+ ghichu +"','"+ thoigian +"')", (err, result) => {
+        client.query("INSERT INTO nguyenvong(bysinhvien,bomon,giangvien,ghichu,thoigian) VALUES ('" + id + "','" + bomon + "','" + giangvien + "','" + ghichu + "','" + thoigian + "')", (err, result) => {
             release();
             if (err) {
                 res.end();
@@ -195,6 +194,36 @@ app.post("/sinhvien/nguyenvong/:id", function(req, res){
     })
 })
 
+app.get("/sinhvien/doancuatoi/:id", function(req, res) {
+    var id = req.params.id;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("SELECT doanhientai FROM sinhvien WHERE id=" + id, (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            if (result.rows[0].doanhientai !== null) {
+                pool.connect((err, client, release) => {
+                    if (err) {
+                        return console.error('Error acquiring client', err.stack);
+                    }
+                    client.query("SELECT * FROM "+result.rows[0].doanhientai+" WHERE uploadby="+id, (err, result) => {
+                        release();
+                        if (err) {
+                            res.end();
+                            return console.error('Error executing query', err.stack)
+                        }
+                        res.send(result);
+                    })
+                })
+            } else res.send('Sinh viên không có đồ án kỳ này!');
+        })
+    })
+});
 
 /* sử dụng chứng thực local, nếu chứng thực ko đc thì gửi mess*/
 app.route('/login')
@@ -301,14 +330,14 @@ app.get("/da/:name/byid=:id", function(req, res) {
     })
 });
 
-app.get("/da/:name/get8from/:num", function(req, res){
+app.get("/da/:name/get8from/:num", function(req, res) {
     var name = req.params.name;
     var num = req.params.num;
     pool.connect((err, client, release) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query('SELECT * FROM ' + name + '  ORDER BY id DESC OFFSET ' +num*8+ ' LIMIT 8', (err, result) => {
+        client.query('SELECT * FROM ' + name + '  ORDER BY id DESC OFFSET ' + num * 8 + ' LIMIT 8', (err, result) => {
             release();
             if (err) {
                 res.end();
@@ -353,7 +382,7 @@ app.get("/giangvien/bomon=:bm", function(req, res) {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query("SELECT * FROM giangvien WHERE bomon='" + bm+"'", (err, result) => {
+        client.query("SELECT * FROM giangvien WHERE bomon='" + bm + "'", (err, result) => {
             release();
             if (err) {
                 res.end();
