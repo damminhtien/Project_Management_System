@@ -12,7 +12,7 @@
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="#"><span class="glyphicon glyphicon-certificate"></span> Thông tin đồ án</a></li>
-                    <li><a href="/doancuatoi"><span class="glyphicon glyphicon-file"></span> Đồ án của tôi</a></li>
+                    <li><a href="/sinhvien/doancuatoi/<%=usr.id%>"><span class="glyphicon glyphicon-file"></span> Đồ án của tôi</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="../logout"><span class="glyphicon glyphicon-log-in"></span> Đăng xuất</a></li>
@@ -49,7 +49,7 @@
                         <td colspan="7">
                             <ul class="text-left" style="padding-left: 30px;">
                                 <li>Đã hoàn thành <span class="glyphicon glyphicon-ok-sign"></span> : <%= data.hoanthanh %></li>
-                                <li>Xem tài liệu <span class="glyphicon glyphicon-download"></span> : <a href="./<%=usr.doan[index]%>/id=<%=data.id%>/view" style="background-color:yellow;">View</a></li>
+                                <li>Xem tài liệu <span class="glyphicon glyphicon-download"></span> : <a href="./<%=usr.doan[index]%>/byid=<%=usr.id%>" style="background-color:yellow;">View</a></li>
                                 <li>Điểm <span class="glyphicon glyphicon-flash"></span> : <%= data.diem %></li>
                                 <li>Star <span class="glyphicon glyphicon-star"></span> : <%= data.star %></li>
                                 <li>Thời gian tải lên <span class="glyphicon glyphicon-upload"></span> : <%= data.timeupload %></li>

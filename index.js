@@ -6,6 +6,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var session = require('express-session');
 var flash = require('connect-flash-plus');
 var fs = require('fs');
+var multer = require('multer');
 
 app.use(session({
     secret: 'keyboard cat',
@@ -207,23 +208,56 @@ app.get("/sinhvien/doancuatoi/:id", function(req, res) {
                 return console.error('Error executing query', err.stack)
             }
             if (result.rows[0].doanhientai !== null) {
+                var daht = result.rows[0].doanhientai;
                 pool.connect((err, client, release) => {
                     if (err) {
                         return console.error('Error acquiring client', err.stack);
                     }
-                    client.query("SELECT * FROM "+result.rows[0].doanhientai+" WHERE uploadby="+id, (err, result) => {
+                    client.query("SELECT * FROM " + daht + " WHERE uploadby=" + id, (err, result) => {
                         release();
                         if (err) {
                             res.end();
                             return console.error('Error executing query', err.stack)
                         }
-                        res.send(result);
+                        res.render('myproject', { da: result.rows[0], daht: daht });
                     })
                 })
             } else res.send('Sinh viên không có đồ án kỳ này!');
         })
     })
 });
+
+var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, './uploads/' + req.body.da);
+    },
+    filename: function(req, file, cb) {
+        cb(null, req.body.id + req.body.da + '.pdf');
+    }
+})
+
+var upload = multer({ storage: storage });
+
+app.post("/sinhvien/doancuatoi/:id", upload.single('file'), function(req, res) {
+    var id = req.body.id;
+    var da = req.body.da;
+    var ten = req.body.tendetai;
+    var ghichu = req.body.ghichu;
+    var time = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("UPDATE "+da+" SET tendetai='"+ten+"',timeupload='"+time+"',ghichu='"+ghichu+"',hoanthanh='true' WHERE uploadby='"+id+"'", (err, result) => {
+            release();  
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.send('Upload success, <a href=\"../../sinhvien\"> nhấn vào đây để quay lại </a>');
+        })
+    })
+})
 
 /* sử dụng chứng thực local, nếu chứng thực ko đc thì gửi mess*/
 app.route('/login')
@@ -282,7 +316,6 @@ passport.deserializeUser(function(user, done) {
             }
             result.rows.forEach(function(usr) {
                 if (usr.id == user.id) {
-                    // console.log(user);
                     return done(null, user);
                 }
             });
@@ -348,10 +381,10 @@ app.get("/da/:name/get8from/:num", function(req, res) {
     })
 })
 
-app.get('/:name/id=:id/view', function(req, res) {
+app.get('/:name/byid=:id', function(req, res) {
     var id = req.params.id,
         name = req.params.name;
-    var filePath = "/uploads/" + name + "/" + id + ".pdf";
+    var filePath = "/uploads/" + name + "/" + id + name + ".pdf";
     fs.readFile(__dirname + filePath, function(err, data) {
         res.contentType("application/pdf");
         res.send(data);
