@@ -76,14 +76,15 @@ app.get('/sinhvien', function(req, res) {
                     res.end();
                     return console.error('Error executing query', err.stack)
                 }
-                if (req.session.passport.user.doan.length >= 1) {
+                var usr = result.rows[0];
+                if (usr.doan.length >= 1) {
                     pool.connect((err, client, release) => {
                         client.query('SELECT * FROM da WHERE da.uploadby=' + req.session.passport.user.id, (err, result) => {
                             release();
                             if (err) {
                                 res.end();
                             }
-                            res.render('sinhvien/sinhvien', { usr: req.session.passport.user, da: result.rows });
+                            res.render('sinhvien/sinhvien', { usr: usr, da: result.rows });
                         })
                     })
                 }
@@ -95,11 +96,11 @@ app.get('/sinhvien', function(req, res) {
 
 });
 
-app.get("/sinhvien/doimatkhau/:id", function(req, res) {
+app.get("/doimatkhau/:id", function(req, res) {
     res.render('changepass');
 });
 
-app.get("/sinhvien/doanthamkhao", function(req, res) {
+app.get("/doanthamkhao", function(req, res) {
     res.render('project-template');
 })
 
@@ -227,6 +228,35 @@ app.get("/sinhvien/doancuatoi/:id", function(req, res) {
     })
 });
 
+app.get('/giangvien', function(req, res) {
+    if (req.isAuthenticated()) {
+        pool.connect((err, client, release) => {
+            if (err) {
+                return console.error('Error acquiring client', err.stack);
+            }
+            client.query('SELECT * FROM giangvien WHERE id=' + req.session.passport.user.id, (err, result) => {
+                release();
+                if (err) {
+                    res.end();
+                    return console.error('Error executing query', err.stack)
+                }
+                var usr = result.rows[0];
+                pool.connect((err, client, release) => {
+                    client.query('SELECT * FROM da WHERE diem IS NULL AND huongdan = ' + req.session.passport.user.id, (err, result) => {
+                        release();
+                        if (err) {
+                            res.end();
+                        }
+                        res.render('giangvien/giangvien', { usr: usr, da: result.rows });
+                    })
+                })
+            })
+        })
+    } else {
+        res.redirect('/');
+    }
+});
+
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, './uploads/' + req.body.da);
@@ -248,8 +278,8 @@ app.post("/sinhvien/doancuatoi/:id", upload.single('file'), function(req, res) {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query("UPDATE "+da+" SET tendetai='"+ten+"',timeupload='"+time+"',ghichu='"+ghichu+"',hoanthanh='true' WHERE uploadby='"+id+"'", (err, result) => {
-            release();  
+        client.query("UPDATE " + da + " SET tendetai='" + ten + "',timeupload='" + time + "',ghichu='" + ghichu + "',hoanthanh='true' WHERE uploadby='" + id + "'", (err, result) => {
+            release();
             if (err) {
                 res.end();
                 return console.error('Error executing query', err.stack)
@@ -273,7 +303,7 @@ passport.use(new LocalStrategy(
             if (err) {
                 return console.error('Error acquiring client', err.stack);
             }
-            client.query('SELECT * FROM sinhvien', (err, result) => {
+            client.query('select id, password,ten from sinhvien union select id, password, ten from giangvien', (err, result) => {
                 release();
                 if (err) {
                     res.end();
@@ -299,7 +329,6 @@ passport.use(new LocalStrategy(
 
 /* nếu chứng thực đúng sẽ gọi  */
 passport.serializeUser((user, done) => {
-    // console.log("serializeUser" + user);
     done(null, user);
 })
 
@@ -309,7 +338,7 @@ passport.deserializeUser(function(user, done) {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query('SELECT * FROM sinhvien', (err, result) => {
+        client.query('select id, password, ten from sinhvien union select id, password, ten from giangvien', (err, result) => {
             release();
             if (err) {
                 return console.error('Error executing query', err.stack)

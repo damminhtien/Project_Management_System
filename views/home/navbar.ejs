@@ -31,8 +31,12 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <% if(usr != null){ %>
-                <li><a href= "../sinhvien"  ><span class="glyphicon glyphicon-user"></span> <%= usr.user.ten %></a></li> 
+                <% if(usr != null){ 
+                   if(usr.user.id >= '20000000'){    %>
+                    <li><a href= "../sinhvien"  ><span class="glyphicon glyphicon-user"></span> <%= usr.user.ten %></a></li>
+                    <%}else{%>
+                    <li><a href= "../giangvien"  ><span class="glyphicon glyphicon-user"></span> <%= usr.user.ten %></a></li>
+                    <%}%>
                 <li><a href="../logout">Logout</a></li>
                 <% } else { %>
                 <li><a href="../login"><span class="glyphicon glyphicon-log-in"></span> Đăng nhập</a></li>
