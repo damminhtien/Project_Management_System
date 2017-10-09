@@ -1,4 +1,5 @@
 <% include header-for-all %>
+<script src="./js/changeinfo.js" type="text/javascript" charset="utf-8" async defer></script>
 <style type="text/css" media="screen">
 body {
     background: #9830b2;
@@ -16,15 +17,16 @@ div.container {
     <div class="container">
         <form method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded" class="form-horizontal">
             <div class="form-group">
+                <label class="control-label col-sm-2">Họ và tên :</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="txtTen" value="<%=sv.ten%>" disabled>
+                </div>
+            </div>
+            <%if(sv.id > 20000000){%>
+            <div class="form-group">
                 <label class="control-label col-sm-2">MSSV:</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" name="txtId" value="<%=sv.id%>" disabled> 
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-sm-2">Họ và tên sinh viên:</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" name="txtTen" value="<%=sv.ten%>" disabled>
                 </div>
             </div>
             <div class="form-group">
@@ -39,6 +41,20 @@ div.container {
                     <input type="text" class="form-control" name="txtKhoa" value="<%=sv.khoa%>" disabled>
                 </div>
             </div>
+            <%}else{%>
+            <div class="form-group">
+                <label class="control-label col-sm-2">ID:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="txtId" value="<%=sv.id%>" disabled> 
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Địa chỉ :</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="txtDiachi" value="<%=sv.diachi%>"> 
+                </div>
+            </div>
+            <%}%>
             <div class="form-group">
                 <label class="control-label col-sm-2">Năm sinh:</label>
                 <div class="col-sm-10">
@@ -59,12 +75,12 @@ div.container {
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <h5 id="message" class="alert-warning">Chú ý: Sinh viên phải chịu trách nhiệm với những thông tin kê khai ở đây</h5>
+                    <h5 id="message" class="alert-warning">Chú ý: Người dùng phải chịu trách nhiệm với những thông tin kê khai ở đây</h5>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <input type="submit" name="btnChange" value="Đổi thông tin" class="btn btn-success">
+                    <input type="submit" name="btnChange" value="Đổi thông tin" class="btn btn-success" disabled>
                 </div>
             </div>
         </form>

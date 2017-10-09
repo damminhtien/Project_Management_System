@@ -64,6 +64,23 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
+app.get('/baiviet/xem/:id', (req, res) => {
+    var id = req.params.id;
+   pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query('SELECT * FROM thongbao WHERE id='+id, (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.render('viewpost', { thongbao: result.rows[0], usr: req._passport.session});
+        })
+    }) 
+});
+
 app.get('/sinhvien', function(req, res) {
     if (req.isAuthenticated()) {
         pool.connect((err, client, release) => {
@@ -93,68 +110,101 @@ app.get('/sinhvien', function(req, res) {
     } else {
         res.redirect('/');
     }
-
-});
-
-app.get("/doimatkhau/:id", function(req, res) {
-    res.render('changepass');
 });
 
 app.get("/doanthamkhao", function(req, res) {
     res.render('project-template');
 })
 
-app.get("/sinhvien/doithongtin/:id", function(req, res) {
+app.get("/doithongtin/:id", function(req, res) {
     var id = req.params.id;
     pool.connect((err, client, release) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query("SELECT id,ten,lop,khoa,sdt,mail,namsinh FROM sinhvien WHERE id=" + id, (err, result) => {
-            release();
-            if (err) {
-                res.end();
-                return console.error('Error executing query', err.stack)
-            }
-            res.render('changeinfo', { sv: result.rows[0] });
-        })
+        if (id > 20000000) {
+            client.query("SELECT id,ten,lop,khoa,sdt,mail,namsinh FROM sinhvien WHERE id=" + id, (err, result) => {
+                release();
+                if (err) {
+                    res.end();
+                    return console.error('Error executing query', err.stack)
+                }
+                res.render('changeinfo', { sv: result.rows[0] });
+            })
+        } else {
+            client.query("SELECT id,ten,sdt,mail,namsinh,diachi FROM giangvien WHERE id=" + id, (err, result) => {
+                release();
+                if (err) {
+                    res.end();
+                    return console.error('Error executing query', err.stack)
+                }
+                res.render('changeinfo', { sv: result.rows[0] });
+            })
+        }
     })
 });
 
-app.post("/sinhvien/doithongtin/:id", function(req, res) {
+app.post("/doithongtin/:id", function(req, res) {
     var id = req.params.id,
         sdt = req.body.txtSdt,
         mail = req.body.txtMail;
+    diachi = req.body.txtDiachi;
     pool.connect((err, client, release) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query("UPDATE sinhvien SET sdt='" + sdt + "', mail='" + mail + "' WHERE id=" + id, (err, result) => {
-            release();
-            if (err) {
-                res.end();
-                return console.error('Error executing query', err.stack)
-            }
-            res.redirect('/sinhvien');
-        })
+        if (id > 20000000) {
+            client.query("UPDATE sinhvien SET sdt='" + sdt + "', mail='" + mail + "' WHERE id=" + id, (err, result) => {
+                release();
+                if (err) {
+                    res.end();
+                    return console.error('Error executing query', err.stack)
+                }
+                res.redirect('/sinhvien');
+            })
+        } else {
+            client.query("UPDATE giangvien SET sdt='" + sdt + "', mail='" + mail + "', diachi='" + diachi + "' WHERE id=" + id, (err, result) => {
+                release();
+                if (err) {
+                    res.end();
+                    return console.error('Error executing query', err.stack)
+                }
+                res.redirect('/giangvien');
+            })
+        }
     })
 });
 
-app.post("/sinhvien/doimatkhau/:id", urlencodedParser, function(req, res) {
+app.get("/doimatkhau/:id", function(req, res) {
+    res.render('changepass');
+});
+
+app.post("/doimatkhau/:id", urlencodedParser, function(req, res) {
     var id = req.params.id;
     var newPass0 = req.body.txtNewPassword0;
     pool.connect((err, client, release) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query("UPDATE sinhvien SET password=" + newPass0 + " WHERE id=" + id, (err, result) => {
-            release();
-            if (err) {
-                res.end();
-                return console.error('Error executing query', err.stack)
-            }
-            res.redirect("../../sinhvien");
-        })
+        if (id >= 20000000) {
+            client.query("UPDATE sinhvien SET password=" + newPass0 + " WHERE id=" + id, (err, result) => {
+                release();
+                if (err) {
+                    res.end();
+                    return console.error('Error executing query', err.stack)
+                }
+                res.redirect("../../sinhvien");
+            })
+        } else {
+            client.query("UPDATE giangvien SET password=" + newPass0 + " WHERE id=" + id, (err, result) => {
+                release();
+                if (err) {
+                    res.end();
+                    return console.error('Error executing query', err.stack)
+                }
+                res.redirect("../../giangvien");
+            })
+        }
     })
 });
 
@@ -257,6 +307,41 @@ app.get('/giangvien', function(req, res) {
     }
 });
 
+app.get('/giangvien/chodiem/:da/:id', function(req, res) {
+    var da = req.params.da,
+        id = req.params.id;
+    if (req.isAuthenticated()) {
+        pool.connect((err, client, release) => {
+            client.query("SELECT huongdan FROM " + da + " WHERE uploadby=" +id, (err, result) => {
+                release();
+                if (err) {
+                    res.end();
+                }
+                console.log(result);
+                if (result.rows[0].huongdan != req.session.passport.user.id) res.redirect("/");
+                else res.render('giangvien/setmark');
+            })
+        })
+    } else {
+        res.redirect('/');
+    }
+})
+
+app.post('/giangvien/chodiem/:da/:id', function(req, res) {
+    var da = req.params.da,
+        id = req.params.id,
+        diem = req.body.txtDiem;
+    pool.connect((err, client, release) => {
+        client.query("UPDATE da SET diem='" + diem + "' WHERE uploadby='" + id + "'", (err, result) => {
+            release();
+            if (err) {
+                res.end();
+            }
+            res.send("Cho điểm thành công <a href=\"../../../giangvien\">Nhấn vào đây để quay lại</a>");
+        })
+    })
+})
+
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, './uploads/' + req.body.da);
@@ -289,6 +374,10 @@ app.post("/sinhvien/doancuatoi/:id", upload.single('file'), function(req, res) {
     })
 })
 
+app.get('/giangvu',function(req, res){
+   res.render('giangvu/home', {usr: user._passport.session}) 
+})
+
 /* sử dụng chứng thực local, nếu chứng thực ko đc thì gửi mess*/
 app.route('/login')
     .get(function(req, res) {
@@ -303,7 +392,7 @@ passport.use(new LocalStrategy(
             if (err) {
                 return console.error('Error acquiring client', err.stack);
             }
-            client.query('select id, password,ten from sinhvien union select id, password, ten from giangvien', (err, result) => {
+            client.query('select id, password,ten from sinhvien union select id, password, ten from giangvien union select id, password, ten from nvvanphong', (err, result) => {
                 release();
                 if (err) {
                     res.end();
@@ -338,7 +427,7 @@ passport.deserializeUser(function(user, done) {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query('select id, password, ten from sinhvien union select id, password, ten from giangvien', (err, result) => {
+        client.query('select id, password,ten from sinhvien union select id, password, ten from giangvien union select id, password, ten from nvvanphong', (err, result) => {
             release();
             if (err) {
                 return console.error('Error executing query', err.stack)

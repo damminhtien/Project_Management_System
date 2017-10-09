@@ -34,6 +34,8 @@
                 <% if(usr != null){ 
                    if(usr.user.id >= '20000000'){    %>
                     <li><a href= "../sinhvien"  ><span class="glyphicon glyphicon-user"></span> <%= usr.user.ten %></a></li>
+                    <%}else if(usr.user.id >= '1000'){%>
+                    <li><a href= "../giangvu"  ><span class="glyphicon glyphicon-user"></span> <%= usr.user.ten %></a></li>        
                     <%}else{%>
                     <li><a href= "../giangvien"  ><span class="glyphicon glyphicon-user"></span> <%= usr.user.ten %></a></li>
                     <%}%>
