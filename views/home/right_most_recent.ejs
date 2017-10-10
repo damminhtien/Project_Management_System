@@ -5,19 +5,19 @@
     <div class="panel-body">
         <ol>
             <li>
-                <%= thongbao.rows[i1].tieude %>
+                <%= thongbao.rows[i1].tieude %><a href="/baiviet/xem/<%=thongbao.rows[i1].id%>"> [Xem]</a>
             </li>
             <li>
-                <%= thongbao.rows[i2].tieude %>
+                <%= thongbao.rows[i2].tieude %><a href="/baiviet/xem/<%=thongbao.rows[i2].id%>"> [Xem]</a>
             </li>
             <li>
-                <%= thongbao.rows[i3].tieude %>
+                <%= thongbao.rows[i3].tieude %><a href="/baiviet/xem/<%=thongbao.rows[i3].id%>"> [Xem]</a>
             </li>
             <li>
-                <%= thongbao.rows[i4].tieude %>
+                <%= thongbao.rows[i4].tieude %><a href="/baiviet/xem/<%=thongbao.rows[i4].id%>"> [Xem]</a>
             </li>
             <li>
-                <%= thongbao.rows[i5].tieude %>
+                <%= thongbao.rows[i5].tieude %><a href="/baiviet/xem/<%=thongbao.rows[i5].id%>"> [Xem]</a>
             </li>
         </ol>
     </div>
@@ -35,39 +35,46 @@
                             <tr>
                                 <th>TOP</th>
                                 <th>TÊN ĐỀ TÀI</th>
-                                <th>RATING</th>
+                                <th>STARs</th>
+                                <th>LINK</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>1</td>
-                                <td>Defaultson</td>
-                                <td>def@somemail.com</td>
+                                <td id="tendetai0"></td>
+                                <td id="star0"></td>
+                                <td id="link0"></td>
                             </tr>
                             <tr class="success">
                                 <td>2</td>
-                                <td>Doe</td>
-                                <td>john@example.com</td>
+                                <td id="tendetai1"></td>
+                                <td id="star1"></td>
+                                <td id="link1"></td>
                             </tr>
                             <tr class="danger">
                                 <td>3</td>
-                                <td>Moe</td>
-                                <td>mary@example.com</td>
+                                <td id="tendetai2"></td>
+                                <td id="star2"></td>
+                                <td id="link2"></td>
                             </tr>
                             <tr class="info">
                                 <td>4</td>
-                                <td>Dooley</td>
-                                <td>july@example.com</td>
+                                <td id="tendetai3"></td>
+                                <td id="star3"></td>
+                                <td id="link3"></td>
                             </tr>
                             <tr class="warning">
                                 <td>5</td>
-                                <td>Refs</td>
-                                <td>bo@example.com</td>
+                                <td id="tendetai4"></td>
+                                <td id="star4"></td>
+                                <td id="link4"></td>
                             </tr>
                             <tr class="active">
                                 <td>6</td>
-                                <td>Activeson</td>
-                                <td>act@example.com</td>
+                                <td id="tendetai5"></td>
+                                <td id="star5"></td>
+                                <td id="link5"></td>
                             </tr>
                         </tbody>
                     </table>

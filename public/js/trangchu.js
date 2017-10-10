@@ -1,4 +1,28 @@
 $("document").ready(function(){
+	for(var i=0; i<6; i++){
+		(async function(i){
+				$.ajax({
+        		    url: "./da/da/gettop",
+           			type: "GET",
+            		success: function(data) {
+                		$('#tendetai'+ i).html(data[i].tendetai);
+						$('#star' + i).html(data[i].star);
+						if(data[i].id < 1000){
+							$('#link' + i).html("<a href=\"./da1/byid="+data[i].uploadby+"\">Xem</a>");
+						}
+						else if(data[i].id < 2000){
+							$('#link' + i).html("<a href=\"./da2/byid="+data[i].uploadby+"\">Xem</a>");
+						}
+						else if(data[i].id < 3000){
+							$('#link' + i).html("<a href=\"./da3/byid="+data[i].uploadby+"\">Xem</a>");
+						}
+						else{
+							$('#link' + i).html("<a href=\"./datn/byid="+data[i].uploadby+"\">Xem</a>");
+						}
+            		}
+        		});
+		})(i);
+	}
 	var post = 0;
 	$("#inputSearch").focusin(function(){
 		$(this).css("background-color", "#f0f5f5");

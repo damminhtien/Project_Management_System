@@ -66,20 +66,54 @@ app.get('/logout', (req, res) => {
 
 app.get('/baiviet/xem/:id', (req, res) => {
     var id = req.params.id;
-   pool.connect((err, client, release) => {
+    pool.connect((err, client, release) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query('SELECT * FROM thongbao WHERE id='+id, (err, result) => {
+        client.query('SELECT * FROM thongbao WHERE id=' + id, (err, result) => {
             release();
             if (err) {
                 res.end();
                 return console.error('Error executing query', err.stack)
             }
-            res.render('viewpost', { thongbao: result.rows[0], usr: req._passport.session});
+            pool.connect((err, client, release) => {
+                if (err) {
+                    return console.error('Error acquiring client', err.stack);
+                }
+                client.query("UPDATE thongbao SET luotxem = luotxem + 1 WHERE id = " + id);
+            })
+            res.render('viewpost', { thongbao: result.rows[0], usr: req._passport.session });
         })
-    }) 
+    })
 });
+
+app.get('/baiviet/viet/byid=:id', (req, res) => {
+    res.render('giangvu/writepost', { usr: req._passport.session });
+})
+
+var uploadAnh = multer({ dest: 'public/images/' });
+
+app.post('/baiviet/viet/byid=:id',uploadAnh.single('ava') ,(req, res) => {
+    var id = req.params.id,
+        tieude = req.body.txtTieude,
+        tomtat = req.body.txtTomtatnoidung,
+        noidung = req.body.txtNoidung,
+        thoigian = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
+        filename = req.file.originalname;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("INSERT INTO thongbao(tieude,tomtatnoidung,noidung,uploadby,ngaygioupload,anhdaidien) VALUES('" + tieude + "','" + tomtat + "','" + noidung + "'," + id + ",'" + thoigian + "','"+filename+"')", (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.send("Gửi bài thành công");
+        })
+    })
+})
 
 app.get('/sinhvien', function(req, res) {
     if (req.isAuthenticated()) {
@@ -312,7 +346,7 @@ app.get('/giangvien/chodiem/:da/:id', function(req, res) {
         id = req.params.id;
     if (req.isAuthenticated()) {
         pool.connect((err, client, release) => {
-            client.query("SELECT huongdan FROM " + da + " WHERE uploadby=" +id, (err, result) => {
+            client.query("SELECT huongdan FROM " + da + " WHERE uploadby=" + id, (err, result) => {
                 release();
                 if (err) {
                     res.end();
@@ -342,7 +376,7 @@ app.post('/giangvien/chodiem/:da/:id', function(req, res) {
     })
 })
 
-var storage = multer.diskStorage({
+var storageDa = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, './uploads/' + req.body.da);
     },
@@ -351,9 +385,9 @@ var storage = multer.diskStorage({
     }
 })
 
-var upload = multer({ storage: storage });
+var uploadDa = multer({ storage: storageDa });
 
-app.post("/sinhvien/doancuatoi/:id", upload.single('file'), function(req, res) {
+app.post("/sinhvien/doancuatoi/:id", uploadDa.single('file'), function(req, res) {
     var id = req.body.id;
     var da = req.body.da;
     var ten = req.body.tendetai;
@@ -374,8 +408,8 @@ app.post("/sinhvien/doancuatoi/:id", upload.single('file'), function(req, res) {
     })
 })
 
-app.get('/giangvu',function(req, res){
-   res.render('giangvu/home', {usr: user._passport.session}) 
+app.get('/giangvu', function(req, res) {
+    res.render('giangvu/home', { usr: user._passport.session })
 })
 
 /* sử dụng chứng thực local, nếu chứng thực ko đc thì gửi mess*/
@@ -441,6 +475,24 @@ passport.deserializeUser(function(user, done) {
     })
 });
 
+app.get("/da/:da/bomon=:bm",(req ,res)=>{
+    var da = req.params.da,
+        bomon = req.params.bm;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("SELECT tendetai,"+da+".id,uploadby,huongdan,diem,star,ky,ghichu FROM "+da+",giangvien WHERE giangvien.bomon = '"+bomon+"' AND "+da+".hoanthanh=true AND "+da+".huongdan=giangvien.id", (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.send(result.rows);
+        })
+    })
+});
+
 /* ajax */
 
 /* bài đăng */
@@ -481,6 +533,23 @@ app.get("/da/:name/byid=:id", function(req, res) {
     })
 });
 
+app.get("/da/:da/gettop", (req, res) => {
+    var da = req.params.da;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query('SELECT star,id,uploadby,diem,huongdan,tendetai FROM ' + da + '  ORDER BY star DESC LIMIT 6', (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.send(result.rows);
+        })
+    })
+})
+
 app.get("/da/:name/get8from/:num", function(req, res) {
     var name = req.params.name;
     var num = req.params.num;
@@ -500,12 +569,18 @@ app.get("/da/:name/get8from/:num", function(req, res) {
 })
 
 app.get('/:name/byid=:id', function(req, res) {
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("UPDATE "+name+" SET star = star + 1 WHERE uploadby = " + id);
+    })
     var id = req.params.id,
         name = req.params.name;
     var filePath = "/uploads/" + name + "/" + id + name + ".pdf";
     fs.readFile(__dirname + filePath, function(err, data) {
         res.contentType("application/pdf");
-        res.send(data);
+        res.end(data);
     });
 })
 
