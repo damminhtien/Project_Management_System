@@ -42,7 +42,7 @@ server.listen(process.env.PORT || 2211);
 
 // var database = require(__dirname + '/models/database.js');
 
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
     pool.connect((err, client, release) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
@@ -93,7 +93,7 @@ app.get('/baiviet/viet/byid=:id', (req, res) => {
 
 var uploadAnh = multer({ dest: 'public/images/' });
 
-app.post('/baiviet/viet/byid=:id',uploadAnh.single('ava') ,(req, res) => {
+app.post('/baiviet/viet/byid=:id', uploadAnh.single('ava'), (req, res) => {
     var id = req.params.id,
         tieude = req.body.txtTieude,
         tomtat = req.body.txtTomtatnoidung,
@@ -104,7 +104,7 @@ app.post('/baiviet/viet/byid=:id',uploadAnh.single('ava') ,(req, res) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query("INSERT INTO thongbao(tieude,tomtatnoidung,noidung,uploadby,ngaygioupload,anhdaidien) VALUES('" + tieude + "','" + tomtat + "','" + noidung + "'," + id + ",'" + thoigian + "','"+filename+"')", (err, result) => {
+        client.query("INSERT INTO thongbao(tieude,tomtatnoidung,noidung,uploadby,ngaygioupload,anhdaidien) VALUES('" + tieude + "','" + tomtat + "','" + noidung + "'," + id + ",'" + thoigian + "','" + filename + "')", (err, result) => {
             release();
             if (err) {
                 res.end();
@@ -115,7 +115,7 @@ app.post('/baiviet/viet/byid=:id',uploadAnh.single('ava') ,(req, res) => {
     })
 })
 
-app.get('/sinhvien', function(req, res) {
+app.get('/sinhvien', (req, res) => {
     if (req.isAuthenticated()) {
         pool.connect((err, client, release) => {
             if (err) {
@@ -146,11 +146,11 @@ app.get('/sinhvien', function(req, res) {
     }
 });
 
-app.get("/doanthamkhao", function(req, res) {
+app.get("/doanthamkhao", (req, res) => {
     res.render('project-template');
 })
 
-app.get("/doithongtin/:id", function(req, res) {
+app.get("/doithongtin/:id", (req, res) => {
     var id = req.params.id;
     pool.connect((err, client, release) => {
         if (err) {
@@ -178,7 +178,7 @@ app.get("/doithongtin/:id", function(req, res) {
     })
 });
 
-app.post("/doithongtin/:id", function(req, res) {
+app.post("/doithongtin/:id", (req, res) => {
     var id = req.params.id,
         sdt = req.body.txtSdt,
         mail = req.body.txtMail;
@@ -209,11 +209,11 @@ app.post("/doithongtin/:id", function(req, res) {
     })
 });
 
-app.get("/doimatkhau/:id", function(req, res) {
+app.get("/doimatkhau/:id", (req, res) => {
     res.render('changepass');
 });
 
-app.post("/doimatkhau/:id", urlencodedParser, function(req, res) {
+app.post("/doimatkhau/:id", urlencodedParser, (req, res) => {
     var id = req.params.id;
     var newPass0 = req.body.txtNewPassword0;
     pool.connect((err, client, release) => {
@@ -242,24 +242,28 @@ app.post("/doimatkhau/:id", urlencodedParser, function(req, res) {
     })
 });
 
-app.get("/sinhvien/nguyenvong/:id", function(req, res) {
-    var id = req.params.id;
-    pool.connect((err, client, release) => {
-        if (err) {
-            return console.error('Error acquiring client', err.stack);
-        }
-        client.query("SELECT doanhientai FROM sinhvien WHERE id =" + id, (err, result) => {
-            release();
+app.get("/sinhvien/nguyenvong/:id", (req, res) => {
+    if(req.isAuthenticated()){
+        var id = req.params.id;
+        pool.connect((err, client, release) => {
             if (err) {
-                res.end();
-                return console.error('Error executing query', err.stack)
+                return console.error('Error acquiring client', err.stack);
             }
-            res.render('student-aspiration', { da: result.rows[0] });
+            client.query("SELECT doanhientai FROM sinhvien WHERE id =" + id, (err, result) => {
+                release();
+                if (err) {
+                    res.end();
+                    return console.error('Error executing query', err.stack)
+                }
+                if(result.rows[0].doanhientai != null) res.render('student-aspiration', { da: result.rows[0] });
+                else res.end("Sinh viên không có đồ án kỳ này");
+            })
         })
-    })
+    }
+    else res.redirect("/login");
 })
 
-app.post("/sinhvien/nguyenvong/:id", function(req, res) {
+app.post("/sinhvien/nguyenvong/:id", (req, res) => {
     var id = req.params.id;
     var bomon = req.body.bomon;
     var giangvien = req.body.giangvien;
@@ -280,7 +284,7 @@ app.post("/sinhvien/nguyenvong/:id", function(req, res) {
     })
 })
 
-app.get("/sinhvien/doancuatoi/:id", function(req, res) {
+app.get("/sinhvien/doancuatoi/:id", (req, res) => {
     var id = req.params.id;
     pool.connect((err, client, release) => {
         if (err) {
@@ -312,7 +316,7 @@ app.get("/sinhvien/doancuatoi/:id", function(req, res) {
     })
 });
 
-app.get('/giangvien', function(req, res) {
+app.get('/giangvien', (req, res) => {
     if (req.isAuthenticated()) {
         pool.connect((err, client, release) => {
             if (err) {
@@ -341,7 +345,7 @@ app.get('/giangvien', function(req, res) {
     }
 });
 
-app.get('/giangvien/chodiem/:da/:id', function(req, res) {
+app.get('/giangvien/chodiem/:da/:id', (req, res) => {
     var da = req.params.da,
         id = req.params.id;
     if (req.isAuthenticated()) {
@@ -361,7 +365,8 @@ app.get('/giangvien/chodiem/:da/:id', function(req, res) {
     }
 })
 
-app.post('/giangvien/chodiem/:da/:id', function(req, res) {
+
+app.post('/giangvien/chodiem/:da/:id', (req, res) => {
     var da = req.params.da,
         id = req.params.id,
         diem = req.body.txtDiem;
@@ -387,7 +392,7 @@ var storageDa = multer.diskStorage({
 
 var uploadDa = multer({ storage: storageDa });
 
-app.post("/sinhvien/doancuatoi/:id", uploadDa.single('file'), function(req, res) {
+app.post("/sinhvien/doancuatoi/:id", uploadDa.single('file'), (req, res) => {
     var id = req.body.id;
     var da = req.body.da;
     var ten = req.body.tendetai;
@@ -408,13 +413,13 @@ app.post("/sinhvien/doancuatoi/:id", uploadDa.single('file'), function(req, res)
     })
 })
 
-app.get('/giangvu', function(req, res) {
+app.get('/giangvu', (req, res) => {
     res.render('giangvu/home', { usr: user._passport.session })
 })
 
 /* sử dụng chứng thực local, nếu chứng thực ko đc thì gửi mess*/
 app.route('/login')
-    .get(function(req, res) {
+    .get((req, res) => {
         res.render('login', { message: req.flash('error') });
     })
     .post(passport.authenticate('local', { failureRedirect: '/login', successRedirect: '/', failureFlash: true }));
@@ -475,20 +480,20 @@ passport.deserializeUser(function(user, done) {
     })
 });
 
-app.get("/da/:da/bomon=:bm",(req ,res)=>{
+app.get("/da/:da/bomon=:bm", (req, res) => {
     var da = req.params.da,
         bomon = req.params.bm;
     pool.connect((err, client, release) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query("SELECT tendetai,"+da+".id,uploadby,huongdan,diem,star,ky,ghichu FROM "+da+",giangvien WHERE giangvien.bomon = '"+bomon+"' AND "+da+".hoanthanh=true AND "+da+".huongdan=giangvien.id", (err, result) => {
+        client.query("SELECT tendetai," + da + ".id,uploadby,huongdan,diem,star,ky,ghichu FROM " + da + ",giangvien WHERE giangvien.bomon = '" + bomon + "' AND " + da + ".hoanthanh=true AND " + da + ".huongdan=giangvien.id", (err, result) => {
             release();
             if (err) {
                 res.end();
                 return console.error('Error executing query', err.stack)
             }
-            res.send(result.rows);
+            res.render('doan/bomon', { da: result.rows, bomon: bomon, usr: req._passport.session });
         })
     })
 });
@@ -496,7 +501,7 @@ app.get("/da/:da/bomon=:bm",(req ,res)=>{
 /* ajax */
 
 /* bài đăng */
-app.get("/recent/post=:id.json", function(req, res) {
+app.get("/recent/post=:id.json", (req, res) => {
     var id = parseInt(req.params.id);
     pool.connect((err, client, release) => {
         if (err) {
@@ -515,7 +520,7 @@ app.get("/recent/post=:id.json", function(req, res) {
 
 
 /* đồ án*/
-app.get("/da/:name/byid=:id", function(req, res) {
+app.get("/da/:name/byid=:id", (req, res) => {
     var name = req.params.name;
     var id = parseInt(req.params.id);
     pool.connect((err, client, release) => {
@@ -550,7 +555,7 @@ app.get("/da/:da/gettop", (req, res) => {
     })
 })
 
-app.get("/da/:name/get8from/:num", function(req, res) {
+app.get("/da/:name/get8from/:num", (req, res) => {
     var name = req.params.name;
     var num = req.params.num;
     pool.connect((err, client, release) => {
@@ -568,12 +573,54 @@ app.get("/da/:name/get8from/:num", function(req, res) {
     })
 })
 
-app.get('/:name/byid=:id', function(req, res) {
+app.post("/", (req, res) => {
+    var da = "da";
+    var key = req.body.key.toLowerCase().replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a").replace(/\\|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)/g, ' ').replace(/đ/g, "d").replace(/đ/g, "d").replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y").replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u").replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ.+/g,"o").replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ.+/g, "e").replace(/ì|í|ị|ỉ|ĩ/g,"i");
+    console.log(key);
+    var arrKey = key.split(" ");
     pool.connect((err, client, release) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query("UPDATE "+name+" SET star = star + 1 WHERE uploadby = " + id);
+        client.query('SELECT tendetai,uploadby,id FROM ' + da + ' WHERE hoanthanh = true ORDER BY id ASC ', (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            
+            var arrResultFixKey = []; /*tim kiem chinh xac*/
+            var arrResultHasAllKey = []; /*tim kiem cac key tach roi, chua tat ca cac key*/
+            var arrResultHasSomeKey = []; /*chua mot vai key*/
+            result.rows.forEach((data, index) => {
+                var strCur = data.tendetai.toLowerCase().replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a").replace(/\\|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)/g, ' ').replace(/đ/g, "d").replace(/đ/g, "d").replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y").replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u").replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ.+/g,"o").replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ.+/g, "e").replace(/ì|í|ị|ỉ|ĩ/g,"i");
+                if (strCur.indexOf(key) != -1) {
+                    arrResultFixKey.unshift(data);
+                } else {
+                    var flagAll = true; /* tra ve true neu tat ca key nam trong ten de tai*/
+                    var flagSome = false;
+                    arrKey.forEach((dt) => {
+                        if (strCur.indexOf(dt) == -1) {
+                            flagAll = false;
+                        }else{
+                            flagSome = true;                            
+                        }
+                    });
+                    if (flagAll == true) arrResultHasAllKey.unshift(data);
+                    else if(flagSome == true) arrResultHasSomeKey.unshift(data);
+                }
+            });
+            res.send({arrFixKey:arrResultFixKey, arrHasAll: arrResultHasAllKey, arrHasSome: arrResultHasSomeKey});
+        })
+    })
+})
+
+app.get('/:name/byid=:id', (req, res) => {
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("UPDATE " + name + " SET star = star + 1 WHERE uploadby = " + id);
     })
     var id = req.params.id,
         name = req.params.name;
@@ -585,7 +632,7 @@ app.get('/:name/byid=:id', function(req, res) {
 })
 
 /*giảng viên*/
-app.get("/giangvien/id=:id", function(req, res) {
+app.get("/giangvien/id=:id", (req, res) => {
     var id = parseInt(req.params.id);
     pool.connect((err, client, release) => {
         if (err) {
@@ -602,7 +649,7 @@ app.get("/giangvien/id=:id", function(req, res) {
     })
 });
 
-app.get("/giangvien/bomon=:bm", function(req, res) {
+app.get("/giangvien/bomon=:bm", (req, res) => {
     var bm = req.params.bm;
     pool.connect((err, client, release) => {
         if (err) {

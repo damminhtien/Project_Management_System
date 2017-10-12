@@ -78,6 +78,10 @@ div .panel{
 	width: 100%;
 }
 
+div.panel-heading{
+	padding: 20px;
+}
+
 #div_my_footer{
 	margin-top: 50px;
 	letter-spacing: 2px;
@@ -94,6 +98,10 @@ div .col-md-6{
 div.panel-body{
 	padding: 5px 10px 5px 40px;
 	margin: 0;
+	margin-top: 30px;
+	margin: bottom: 30px;
+	line-height: 25px;
+	text-align: justify;
 }
 
 div .do_an_noi_bat{
