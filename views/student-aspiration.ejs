@@ -16,7 +16,6 @@
         <div class="container">
             <h1 class="text-right">Nguyện vọng đồ án</h1>
             <h2 class="text-right">Đồ án hiện tại của bạn là:
-		<% var daht = da.doanhientai; %>
 			<% if (daht == 'da1') { -%>
 				<span><u>Đồ án 1</u></span>
 			<% } else if(daht == 'da2'){ -%>
@@ -25,9 +24,10 @@
 				<span><u>Đồ án 3</u></span>
 			<% } else if(daht == 'datn'){ -%>
 				<span><u>Đồ án tốt nghiệp</u></span>
-			<% } -%>
+                <%}%>
 		</h2>
             <form method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded" class="form-horizontal">
+                <input type="hidden" name="da" value="<%=daht%>">
                 <div class="form-group">
                     <label class="control-label col-sm-2">Lựa chọn bộ môn:</label>
                     <div class="col-sm-10">

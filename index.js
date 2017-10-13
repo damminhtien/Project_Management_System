@@ -10,7 +10,7 @@ var multer = require('multer');
 
 app.use(session({
     secret: 'keyboard cat',
-    cookie: { maxAge: 60 * 1000 * 15 },
+    cookie: { maxAge: 60 * 1000 * 60 },
     saveUninitialized: true,
     resave: true
 }));
@@ -243,7 +243,7 @@ app.post("/doimatkhau/:id", urlencodedParser, (req, res) => {
 });
 
 app.get("/sinhvien/nguyenvong/:id", (req, res) => {
-    if(req.isAuthenticated()){
+    if (req.isAuthenticated()) {
         var id = req.params.id;
         pool.connect((err, client, release) => {
             if (err) {
@@ -255,12 +255,27 @@ app.get("/sinhvien/nguyenvong/:id", (req, res) => {
                     res.end();
                     return console.error('Error executing query', err.stack)
                 }
-                if(result.rows[0].doanhientai != null) res.render('student-aspiration', { da: result.rows[0] });
-                else res.end("Sinh viên không có đồ án kỳ này");
+                var daht = result.rows[0].doanhientai;
+                if (daht != null) {
+
+                    pool.connect((err, client, release) => {
+                        if (err) {
+                            return console.error('Error acquiring client', err.stack);
+                        }
+                        client.query("SELECT huongdan FROM " + daht + " WHERE uploadby =" + id, (err, result) => {
+                            release();
+                            if (err) {
+                                res.end();
+                                return console.error('Error executing query', err.stack)
+                            }
+                            if (result.rows[0].huongdan == null) res.render('student-aspiration', { daht:daht });
+                            else res.end("Sinh viên không thể đổi nguyện vọng đăng ký.");
+                        })
+                    })
+                } else res.end("Sinh viên không có đồ án kỳ này");
             })
         })
-    }
-    else res.redirect("/login");
+    } else res.redirect("/login");
 })
 
 app.post("/sinhvien/nguyenvong/:id", (req, res) => {
@@ -268,18 +283,19 @@ app.post("/sinhvien/nguyenvong/:id", (req, res) => {
     var bomon = req.body.bomon;
     var giangvien = req.body.giangvien;
     var ghichu = req.body.ghichuTxt;
+    var da = req.body.da;
     var thoigian = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
     pool.connect((err, client, release) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query("INSERT INTO nguyenvong(bysinhvien,bomon,giangvien,ghichu,thoigian) VALUES ('" + id + "','" + bomon + "','" + giangvien + "','" + ghichu + "','" + thoigian + "')", (err, result) => {
+        client.query("INSERT INTO nguyenvong(bysinhvien,bomon,giangvien,ghichu,thoigian,da) VALUES ('" + id + "','" + bomon + "','" + giangvien + "','" + ghichu + "','" + thoigian + "','"+da+"')", (err, result) => {
             release();
             if (err) {
                 res.end();
                 return console.error('Error executing query', err.stack)
             }
-            res.redirect('../');
+            res.redirect('../../sinhvien');
         })
     })
 })
@@ -308,7 +324,9 @@ app.get("/sinhvien/doancuatoi/:id", (req, res) => {
                             res.end();
                             return console.error('Error executing query', err.stack)
                         }
-                        res.render('myproject', { da: result.rows[0], daht: daht });
+                        if (result.rows[0].diem == null) {
+                            res.render('myproject', { da: result.rows[0], daht: daht });
+                        } else res.end("Đồ án của bạn hết thời hạn sửa đổi");
                     })
                 })
             } else res.send('Sinh viên không có đồ án kỳ này!');
@@ -355,7 +373,6 @@ app.get('/giangvien/chodiem/:da/:id', (req, res) => {
                 if (err) {
                     res.end();
                 }
-                console.log(result);
                 if (result.rows[0].huongdan != req.session.passport.user.id) res.redirect("/");
                 else res.render('giangvien/setmark');
             })
@@ -414,7 +431,47 @@ app.post("/sinhvien/doancuatoi/:id", uploadDa.single('file'), (req, res) => {
 })
 
 app.get('/giangvu', (req, res) => {
-    res.render('giangvu/home', { usr: user._passport.session })
+    if (req.isAuthenticated()) {
+        res.render('giangvu/home', { usr: req._passport.session.user });
+    } else res.redirect('/');
+})
+
+app.get('/giangvu/pheduyetdoan', (req, res) => {
+    if (req.isAuthenticated()) {
+        pool.connect((err, client, release) => {
+            client.query("SELECT * FROM nguyenvong", (err, result) => {
+                release();
+                if (err) {
+                    res.end();
+                }
+                res.render('giangvu/approved', { nguyenvong: result.rows, usr: req._passport.session });
+            })
+        })
+    } else res.redirect('/');
+})
+
+app.post('/giangvu/pheduyetdoan', (req, res) => {
+    var id = req.body.id;
+    console.log(id);
+    if (req.isAuthenticated()) {
+        pool.connect((err, client, release) => {
+            client.query("SELECT * FROM nguyenvong WHERE id =" + id, (err, result) => {
+                release();
+                if (err) {
+                    res.end();
+                }
+                var rs = result.rows[0];
+                console.log(rs);
+                var giangvien = rs.giangvien,
+                    sinhvien = rs.bysinhvien,
+                    da = rs.da;
+                pool.connect((err, client, release) => {
+                    client.query("UPDATE "+da+" SET huongdan = "+giangvien+" WHERE  uploadby =" + sinhvien);
+                    client.query("DELETE FROM nguyenvong WHERE bysinhvien =" + sinhvien)
+                })
+            })
+        })
+    } else res.redirect('/');
 })
 
 /* sử dụng chứng thực local, nếu chứng thực ko đc thì gửi mess*/
@@ -575,25 +632,25 @@ app.get("/da/:name/get8from/:num", (req, res) => {
 
 app.post("/", (req, res) => {
     var da = "da";
-    var key = req.body.key.toLowerCase().replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a").replace(/\\|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)/g, ' ').replace(/đ/g, "d").replace(/đ/g, "d").replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y").replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u").replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ.+/g,"o").replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ.+/g, "e").replace(/ì|í|ị|ỉ|ĩ/g,"i");
+    var key = req.body.key.toLowerCase().replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a").replace(/\\|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)/g, ' ').replace(/đ/g, "d").replace(/đ/g, "d").replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y").replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u").replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ.+/g, "o").replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ.+/g, "e").replace(/ì|í|ị|ỉ|ĩ/g, "i");
     console.log(key);
     var arrKey = key.split(" ");
     pool.connect((err, client, release) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query('SELECT tendetai,uploadby,id FROM ' + da + ' WHERE hoanthanh = true ORDER BY id ASC ', (err, result) => {
+        client.query('SELECT tendetai,uploadby,id,star FROM ' + da + ' WHERE hoanthanh = true ORDER BY id ASC ', (err, result) => {
             release();
             if (err) {
                 res.end();
                 return console.error('Error executing query', err.stack)
             }
-            
+
             var arrResultFixKey = []; /*tim kiem chinh xac*/
             var arrResultHasAllKey = []; /*tim kiem cac key tach roi, chua tat ca cac key*/
             var arrResultHasSomeKey = []; /*chua mot vai key*/
             result.rows.forEach((data, index) => {
-                var strCur = data.tendetai.toLowerCase().replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a").replace(/\\|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)/g, ' ').replace(/đ/g, "d").replace(/đ/g, "d").replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y").replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u").replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ.+/g,"o").replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ.+/g, "e").replace(/ì|í|ị|ỉ|ĩ/g,"i");
+                var strCur = data.tendetai.toLowerCase().replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a").replace(/\\|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)/g, ' ').replace(/đ/g, "d").replace(/đ/g, "d").replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y").replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u").replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ.+/g, "o").replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ.+/g, "e").replace(/ì|í|ị|ỉ|ĩ/g, "i");
                 if (strCur.indexOf(key) != -1) {
                     arrResultFixKey.unshift(data);
                 } else {
@@ -602,15 +659,58 @@ app.post("/", (req, res) => {
                     arrKey.forEach((dt) => {
                         if (strCur.indexOf(dt) == -1) {
                             flagAll = false;
-                        }else{
-                            flagSome = true;                            
+                        } else {
+                            flagSome = true;
                         }
                     });
                     if (flagAll == true) arrResultHasAllKey.unshift(data);
-                    else if(flagSome == true) arrResultHasSomeKey.unshift(data);
+                    else if (flagSome == true) arrResultHasSomeKey.unshift(data);
                 }
             });
-            res.send({arrFixKey:arrResultFixKey, arrHasAll: arrResultHasAllKey, arrHasSome: arrResultHasSomeKey});
+            res.render('doan/search-result', { arrFixKey: arrResultFixKey, arrHasAll: arrResultHasAllKey, arrHasSome: arrResultHasSomeKey, usr: req._passport.session, key: req.body.key, bomon: null });
+        })
+    })
+})
+
+app.post("/da/:da/bomon=:bm", (req, res) => {
+    var da = req.params.da;
+    var key = req.body.key.toLowerCase().replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a").replace(/\\|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)/g, ' ').replace(/đ/g, "d").replace(/đ/g, "d").replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y").replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u").replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ.+/g, "o").replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ.+/g, "e").replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    console.log(key);
+    var arrKey = key.split(" ");
+    var bomon = req.params.bm;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("SELECT tendetai,uploadby," + da + ".id,star FROM " + da + ",giangvien WHERE hoanthanh = true AND giangvien.bomon = '" + bomon + "' AND giangvien.id = " + da + ".huongdan ORDER BY id ASC ", (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+
+            var arrResultFixKey = []; /*tim kiem chinh xac*/
+            var arrResultHasAllKey = []; /*tim kiem cac key tach roi, chua tat ca cac key*/
+            var arrResultHasSomeKey = []; /*chua mot vai key*/
+            result.rows.forEach((data, index) => {
+                var strCur = data.tendetai.toLowerCase().replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a").replace(/\\|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)/g, ' ').replace(/đ/g, "d").replace(/đ/g, "d").replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y").replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u").replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ.+/g, "o").replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ.+/g, "e").replace(/ì|í|ị|ỉ|ĩ/g, "i");
+                if (strCur.indexOf(key) != -1) {
+                    arrResultFixKey.unshift(data);
+                } else {
+                    var flagAll = true; /* tra ve true neu tat ca key nam trong ten de tai*/
+                    var flagSome = false;
+                    arrKey.forEach((dt) => {
+                        if (strCur.indexOf(dt) == -1) {
+                            flagAll = false;
+                        } else {
+                            flagSome = true;
+                        }
+                    });
+                    if (flagAll == true) arrResultHasAllKey.unshift(data);
+                    else if (flagSome == true) arrResultHasSomeKey.unshift(data);
+                }
+            });
+            res.render('doan/search-result', { arrFixKey: arrResultFixKey, arrHasAll: arrResultHasAllKey, arrHasSome: arrResultHasSomeKey, usr: req._passport.session, key: req.body.key, bomon: bomon });
         })
     })
 })
