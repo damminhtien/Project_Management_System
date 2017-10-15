@@ -58,6 +58,48 @@ app.get('/', (req, res) => {
     })
 });
 
+app.post("/", (req, res) => {
+    var da = "da";
+    var key = req.body.key.toLowerCase().replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a").replace(/\\|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)/g, ' ').replace(/đ/g, "d").replace(/đ/g, "d").replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y").replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u").replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ.+/g, "o").replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ.+/g, "e").replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    console.log(key);
+    var arrKey = key.split(" ");
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query('SELECT tendetai,uploadby,id,star FROM ' + da + ' WHERE hoanthanh = true ORDER BY id ASC ', (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+
+            var arrResultFixKey = []; /*tim kiem chinh xac*/
+            var arrResultHasAllKey = []; /*tim kiem cac key tach roi, chua tat ca cac key*/
+            var arrResultHasSomeKey = []; /*chua mot vai key*/
+            result.rows.forEach((data, index) => {
+                var strCur = data.tendetai.toLowerCase().replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a").replace(/\\|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)/g, ' ').replace(/đ/g, "d").replace(/đ/g, "d").replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y").replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u").replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ.+/g, "o").replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ.+/g, "e").replace(/ì|í|ị|ỉ|ĩ/g, "i");
+                if (strCur.indexOf(key) != -1) {
+                    arrResultFixKey.unshift(data);
+                } else {
+                    var flagAll = true; /* tra ve true neu tat ca key nam trong ten de tai*/
+                    var flagSome = false;
+                    arrKey.forEach((dt) => {
+                        if (strCur.indexOf(dt) == -1) {
+                            flagAll = false;
+                        } else {
+                            flagSome = true;
+                        }
+                    });
+                    if (flagAll == true) arrResultHasAllKey.unshift(data);
+                    else if (flagSome == true) arrResultHasSomeKey.unshift(data);
+                }
+            });
+            res.render('doan/search-result', { arrFixKey: arrResultFixKey, arrHasAll: arrResultHasAllKey, arrHasSome: arrResultHasSomeKey, usr: req._passport.session, key: req.body.key, bomon: null });
+        })
+    })
+})
+
 app.get('/logout', (req, res) => {
     req.logout();
     req.session.destroy();
@@ -113,6 +155,10 @@ app.post('/baiviet/viet/byid=:id', uploadAnh.single('ava'), (req, res) => {
             res.send("Gửi bài thành công");
         })
     })
+})
+
+app.get('/baiviet/sua', (req, res) => {
+    res.render('modify-post');
 })
 
 app.get('/sinhvien', (req, res) => {
@@ -255,6 +301,7 @@ app.get("/sinhvien/nguyenvong/:id", (req, res) => {
                     res.end();
                     return console.error('Error executing query', err.stack)
                 }
+                console.log(result.rows);
                 var daht = result.rows[0].doanhientai;
                 if (daht != null) {
 
@@ -268,7 +315,7 @@ app.get("/sinhvien/nguyenvong/:id", (req, res) => {
                                 res.end();
                                 return console.error('Error executing query', err.stack)
                             }
-                            if (result.rows[0].huongdan == null) res.render('student-aspiration', { daht:daht });
+                            if (result.rows[0].huongdan == null) res.render('student-aspiration', { daht: daht });
                             else res.end("Sinh viên không thể đổi nguyện vọng đăng ký.");
                         })
                     })
@@ -289,7 +336,7 @@ app.post("/sinhvien/nguyenvong/:id", (req, res) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query("INSERT INTO nguyenvong(bysinhvien,bomon,giangvien,ghichu,thoigian,da) VALUES ('" + id + "','" + bomon + "','" + giangvien + "','" + ghichu + "','" + thoigian + "','"+da+"')", (err, result) => {
+        client.query("INSERT INTO nguyenvong(bysinhvien,bomon,giangvien,ghichu,thoigian,da) VALUES ('" + id + "','" + bomon + "','" + giangvien + "','" + ghichu + "','" + thoigian + "','" + da + "')", (err, result) => {
             release();
             if (err) {
                 res.end();
@@ -466,13 +513,87 @@ app.post('/giangvu/pheduyetdoan', (req, res) => {
                     sinhvien = rs.bysinhvien,
                     da = rs.da;
                 pool.connect((err, client, release) => {
-                    client.query("UPDATE "+da+" SET huongdan = "+giangvien+" WHERE  uploadby =" + sinhvien);
+                    client.query("UPDATE " + da + " SET huongdan = " + giangvien + " WHERE  uploadby =" + sinhvien);
                     client.query("DELETE FROM nguyenvong WHERE bysinhvien =" + sinhvien)
                 })
             })
         })
     } else res.redirect('/');
 })
+
+app.get('/giangvu/capnhatdoanmoi', (req, res) => {
+    if (req.isAuthenticated()) {
+        res.render('giangvu/update-project');
+    } else res.redirect('/');
+})
+
+app.post('/giangvu/capnhatdoanmoi', (req, res) => {
+    var id = req.body.mssv,
+        ky = req.body.ky,
+        da = req.body.da,
+        tS = req.body.timestart,
+        tE = req.body.timeend;
+    pool.connect((err, client, release) => {
+        client.query("SELECT id FROM " + da + " WHERE uploadby=" + id, (err, result) => {
+            release();
+            if (err) {
+                res.end();
+            }
+            if (result.rows[0] == null) {
+                client.query("SELECT doanhientai FROM sinhvien WHERE id=" + id, (err, result) => {
+                    release();
+                    if (err) {
+                        res.end();
+                    }
+                    if (result.rows.doanhientai != null) res.end("Sinh viên đã có đồ án kỳ này");
+                    else {
+                        client.query("INSERT INTO " + da + "(uploadby,ky,timestart,timeend) VALUES(" + id + "," + ky + ",'" + tS + "','" + tE + "')");
+                        client.query("SELECT doan FROM sinhvien WHERE id=" + id, (err, result) => {
+                            release();
+                            if (err) {
+                                res.end();
+                            }
+                            var doan = result.rows[0].doan;
+                            doan.push(da);
+                            client.query("UPDATE sinhvien SET doan = '{" + doan + "}' WHERE id = " + id);
+                            client.query("UPDATE sinhvien SET doanhientai = '" + da + "' WHERE id = " + id);
+                            res.end("Cập nhật thành công");
+                        })
+                    }
+                });
+            } else res.end("Sinh viên đã có đồ án này");
+        })
+    })
+})
+
+app.get("/giangvu/capnhatdoancu", (req, res) => {
+    if (req.isAuthenticated()) {
+        res.render('giangvu/modify-project');
+    } else res.redirect('/');
+});
+
+app.post("/giangvu/capnhatdoancu", (req, res) => {
+    var mssv = req.body.mssv,
+        da = req.body.da,
+        ky = req.body.ky,
+        diem = req.body.diem,
+        ghichu = req.body.ghichu,
+        tendetai = req.body.tendetai,
+        timestart = req.body.timestart,
+        timeend = req.body.timeend,
+        huongdan = req.body.huongdan,
+        star = req.body.star;
+    pool.connect((err, client, release) => {
+        console.log("UPDATE "+da+" SET ky="+ky+",diem="+diem+",ghichu='"+ghichu+"',tendetai='"+tendetai+"',timestart='"+timestart+"',timeend='"+timeend+"',star="+star+",huongdan="+huongdan);
+        client.query("UPDATE "+da+" SET ky="+ky+",diem="+diem+",ghichu='"+ghichu+"',tendetai='"+tendetai+"',timestart='"+timestart+"',timeend='"+timeend+"',star="+star+",huongdan="+huongdan+" WHERE uploadby="+mssv, (err, result) => {
+            release();
+            if (err) {
+                res.end();
+            }
+            res.end("Cập nhật thành công!");
+        })
+    })
+});
 
 /* sử dụng chứng thực local, nếu chứng thực ko đc thì gửi mess*/
 app.route('/login')
@@ -630,48 +751,6 @@ app.get("/da/:name/get8from/:num", (req, res) => {
     })
 })
 
-app.post("/", (req, res) => {
-    var da = "da";
-    var key = req.body.key.toLowerCase().replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a").replace(/\\|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)/g, ' ').replace(/đ/g, "d").replace(/đ/g, "d").replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y").replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u").replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ.+/g, "o").replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ.+/g, "e").replace(/ì|í|ị|ỉ|ĩ/g, "i");
-    console.log(key);
-    var arrKey = key.split(" ");
-    pool.connect((err, client, release) => {
-        if (err) {
-            return console.error('Error acquiring client', err.stack);
-        }
-        client.query('SELECT tendetai,uploadby,id,star FROM ' + da + ' WHERE hoanthanh = true ORDER BY id ASC ', (err, result) => {
-            release();
-            if (err) {
-                res.end();
-                return console.error('Error executing query', err.stack)
-            }
-
-            var arrResultFixKey = []; /*tim kiem chinh xac*/
-            var arrResultHasAllKey = []; /*tim kiem cac key tach roi, chua tat ca cac key*/
-            var arrResultHasSomeKey = []; /*chua mot vai key*/
-            result.rows.forEach((data, index) => {
-                var strCur = data.tendetai.toLowerCase().replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a").replace(/\\|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)/g, ' ').replace(/đ/g, "d").replace(/đ/g, "d").replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y").replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u").replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ.+/g, "o").replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ.+/g, "e").replace(/ì|í|ị|ỉ|ĩ/g, "i");
-                if (strCur.indexOf(key) != -1) {
-                    arrResultFixKey.unshift(data);
-                } else {
-                    var flagAll = true; /* tra ve true neu tat ca key nam trong ten de tai*/
-                    var flagSome = false;
-                    arrKey.forEach((dt) => {
-                        if (strCur.indexOf(dt) == -1) {
-                            flagAll = false;
-                        } else {
-                            flagSome = true;
-                        }
-                    });
-                    if (flagAll == true) arrResultHasAllKey.unshift(data);
-                    else if (flagSome == true) arrResultHasSomeKey.unshift(data);
-                }
-            });
-            res.render('doan/search-result', { arrFixKey: arrResultFixKey, arrHasAll: arrResultHasAllKey, arrHasSome: arrResultHasSomeKey, usr: req._passport.session, key: req.body.key, bomon: null });
-        })
-    })
-})
-
 app.post("/da/:da/bomon=:bm", (req, res) => {
     var da = req.params.da;
     var key = req.body.key.toLowerCase().replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a").replace(/\\|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)/g, ' ').replace(/đ/g, "d").replace(/đ/g, "d").replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y").replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u").replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ.+/g, "o").replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ.+/g, "e").replace(/ì|í|ị|ỉ|ĩ/g, "i");
@@ -765,3 +844,22 @@ app.get("/giangvien/bomon=:bm", (req, res) => {
         })
     })
 });
+
+/*thông báo*/
+
+app.get("/baiviet/laythongtin/id=:id", (req,res) =>{
+    var id = req.params.id;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("SELECT * FROM thongbao WHERE id=" + id, (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.send(result.rows);
+        })
+    })
+})
