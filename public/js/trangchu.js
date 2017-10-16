@@ -38,16 +38,19 @@ $("document").ready(function(){
 		post++;
 		var url = "/recent/post="+post+".json";
 		$.get(url).then(function(data){
+			console.log(data);
   			for(var i=0; i<8; i++){
   				var postTitle = "#postTitle" + i,
   				 	postBody = "#postBody" + i,
   					postView = "#postView" + i,
   					postDate = "#postDate" + i,
-  					postTag = "#postTag" + i;
+  					postTag = "#postTag" + i,
+  					postImg = "#postImg" + i;
   				$(postTitle).html(data[i].tieude);
 				$(postBody).html(data[i].tomtatnoidung);
 				$(postView).html(data[i].luotxem);
 				$(postDate).html(data[i].ngaygioupload);
+				$(postImg).attr("src","./images/"+data[i].anhdaidien);
   			}
 		});
 	})
@@ -61,11 +64,13 @@ $("document").ready(function(){
 	  				 	postBody = "#postBody" + i,
 	  					postView = "#postView" + i,
 	  					postDate = "#postDate" + i,
-	  					postTag = "#postTag" + i;
+	  					postTag = "#postTag" + i,
+	  					postImg = "#postImg" + i;
 	  				$(postTitle).html(data[i].tieude);
 					$(postBody).html(data[i].tomtatnoidung);
 					$(postView).html(data[i].luotxem);
 					$(postDate).html(data[i].ngaygioupload);
+					$(postImg).attr("src","./images/"+data[i].anhdaidien);
 	  			}
 			});
 		}
@@ -79,11 +84,13 @@ $("document").ready(function(){
 					 	postBody = "#postBody" + i,
 						postView = "#postView" + i,
 						postDate = "#postDate" + i,
-						postTag = "#postTag" + i;
+						postTag = "#postTag" + i,
+						postImg = "#postImg" + i;
 					$(postTitle).html(data[i].tieude);
 					$(postBody).html(data[i].tomtatnoidung);
 					$(postView).html(data[i].luotxem);
 					$(postDate).html(data[i].ngaygioupload);
+					$(postImg).attr("src","./images/"+data[i].anhdaidien);
 				}
 		});
 	})

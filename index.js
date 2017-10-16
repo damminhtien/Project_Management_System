@@ -133,7 +133,16 @@ app.get('/baiviet/viet/byid=:id', (req, res) => {
     res.render('giangvu/writepost', { usr: req._passport.session });
 })
 
-var uploadAnh = multer({ dest: 'public/images/' });
+var storageAnh = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'public/images/');
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.originalname);
+    }
+})
+
+var uploadAnh = multer({ storage: storageAnh });
 
 app.post('/baiviet/viet/byid=:id', uploadAnh.single('ava'), (req, res) => {
     var id = req.params.id,
@@ -159,6 +168,27 @@ app.post('/baiviet/viet/byid=:id', uploadAnh.single('ava'), (req, res) => {
 
 app.get('/baiviet/sua', (req, res) => {
     res.render('modify-post');
+})
+
+app.post('/baiviet/sua', uploadAnh.single('ava'), (req, res) => {
+    var id = req.body.id,
+        name = req.body.tieude,
+        tomtat = req.body.tomtatnoidung,
+        noidung = req.body.noidung,
+        ava = req.file.originalname;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("UPDATE thongbao SET noidung='" + noidung + "',tomtatnoidung='" + tomtat + "',tieude='" + name + "',anhdaidien='" + ava + "' WHERE id=" + id + ";", (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.send("Sửa bài thành công");
+        })
+    })
 })
 
 app.get('/sinhvien', (req, res) => {
@@ -273,16 +303,25 @@ app.post("/doimatkhau/:id", urlencodedParser, (req, res) => {
                     res.end();
                     return console.error('Error executing query', err.stack)
                 }
-                res.redirect("../../sinhvien");
+                res.end("Đổi mật khẩu thành công");
             })
-        } else {
+        } else if(id < 10000) {
             client.query("UPDATE giangvien SET password=" + newPass0 + " WHERE id=" + id, (err, result) => {
                 release();
                 if (err) {
                     res.end();
                     return console.error('Error executing query', err.stack)
                 }
-                res.redirect("../../giangvien");
+                res.end("Đổi mật khẩu thành công");
+            })
+        }else{
+            client.query("UPDATE nvvanphong SET password=" + newPass0 + " WHERE id=" + id, (err, result) => {
+                release();
+                if (err) {
+                    res.end();
+                    return console.error('Error executing query', err.stack)
+                }
+                res.end("Đổi mật khẩu thành công");
             })
         }
     })
@@ -584,8 +623,8 @@ app.post("/giangvu/capnhatdoancu", (req, res) => {
         huongdan = req.body.huongdan,
         star = req.body.star;
     pool.connect((err, client, release) => {
-        console.log("UPDATE "+da+" SET ky="+ky+",diem="+diem+",ghichu='"+ghichu+"',tendetai='"+tendetai+"',timestart='"+timestart+"',timeend='"+timeend+"',star="+star+",huongdan="+huongdan);
-        client.query("UPDATE "+da+" SET ky="+ky+",diem="+diem+",ghichu='"+ghichu+"',tendetai='"+tendetai+"',timestart='"+timestart+"',timeend='"+timeend+"',star="+star+",huongdan="+huongdan+" WHERE uploadby="+mssv, (err, result) => {
+        console.log("UPDATE " + da + " SET ky=" + ky + ",diem=" + diem + ",ghichu='" + ghichu + "',tendetai='" + tendetai + "',timestart='" + timestart + "',timeend='" + timeend + "',star=" + star + ",huongdan=" + huongdan);
+        client.query("UPDATE " + da + " SET ky=" + ky + ",diem=" + diem + ",ghichu='" + ghichu + "',tendetai='" + tendetai + "',timestart='" + timestart + "',timeend='" + timeend + "',star=" + star + ",huongdan=" + huongdan + " WHERE uploadby=" + mssv, (err, result) => {
             release();
             if (err) {
                 res.end();
@@ -594,6 +633,70 @@ app.post("/giangvu/capnhatdoancu", (req, res) => {
         })
     })
 });
+
+app.get('/giangvu/taogiangvien', (req, res) => {
+    if (req.isAuthenticated()) {
+        res.render('giangvu/create-teacher');
+    } else res.redirect('/');
+})
+
+app.post('/giangvu/taogiangvien', (req, res) => {
+    var ten = req.body.ten,
+        bomon = req.body.bomon,
+        pass = req.body.pass,
+        namsinh = req.body.namsinh,
+        diachi = req.body.diachi,
+        mail = req.body.mail;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("INSERT INTO giangvien(ten,bomon,password,namsinh,diachi,mail) VALUES('" + ten + "','" + bomon + "','" + pass + "','" + namsinh + "','" + diachi + "','" + mail + "');");
+        client.query("SELECT id,password,ten FROM giangvien ORDER BY id DESC LIMIT 1", (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.send("Tài khoản của giảng viên " + result.rows[0].ten + " : Tên đăng nhập: " + result.rows[0].id + " Mật khẩu: " + result.rows[0].password);
+        })
+    })
+})
+
+app.get('/giangvu/taosinhvien', (req, res) => {
+    if (req.isAuthenticated()) {
+        res.render('giangvu/create-student');
+    } else res.redirect('/');
+})
+
+app.post('/giangvu/taosinhvien', (req, res) => {
+    var id = req.body.id,
+        ten = req.body.ten,
+        pass = req.body.pass,
+        namsinh = req.body.namsinh,
+        lop = req.body.lop,
+        khoa = req.body.khoa;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("INSERT INTO sinhvien(ten,id,password,namsinh,lop) VALUES('" + ten + "','" + id + "'," + pass + "," + namsinh + ",'" + lop + "');", (err, result) => {
+            release();
+            if (err) {
+                res.end("Tài khoản bị trùng mssv đã có");
+                return console.error('Error executing query', err.stack);
+            }
+        });
+        client.query("SELECT id,password,ten FROM sinhvien ORDER BY id DESC LIMIT 1", (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.send("Tài khoản của sinh viên " + result.rows[0].ten + " : Tên đăng nhập: " + result.rows[0].id + " Mật khẩu: " + result.rows[0].password);
+        })
+    })
+})
 
 /* sử dụng chứng thực local, nếu chứng thực ko đc thì gửi mess*/
 app.route('/login')
@@ -847,7 +950,7 @@ app.get("/giangvien/bomon=:bm", (req, res) => {
 
 /*thông báo*/
 
-app.get("/baiviet/laythongtin/id=:id", (req,res) =>{
+app.get("/baiviet/laythongtin/id=:id", (req, res) => {
     var id = req.params.id;
     pool.connect((err, client, release) => {
         if (err) {
