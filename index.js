@@ -40,8 +40,6 @@ const pool = new pg.Pool({
 var server = require("http").Server(app);
 server.listen(process.env.PORT || 2211);
 
-// var database = require(__dirname + '/models/database.js');
-
 app.get('/', (req, res) => {
     pool.connect((err, client, release) => {
         if (err) {
@@ -742,7 +740,6 @@ passport.serializeUser((user, done) => {
 })
 
 passport.deserializeUser(function(user, done) {
-    // console.log('deserializeUser');
     pool.connect((err, client, release) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
@@ -778,6 +775,24 @@ app.get("/da/:da/bomon=:bm", (req, res) => {
         })
     })
 });
+
+app.get("/da/:da/xemchitiet/:id", (req, res) => {
+    var da = req.params.da,
+        id = req.params.id;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query("SELECT * FROM " + da + " WHERE id = "+id, (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            res.render('doan/view-info',{data:result.rows[0], usr: req._passport.session});
+        })
+    })
+}); 
 
 /* ajax */
 
