@@ -98,6 +98,51 @@ app.post("/", (req, res) => {
     })
 })
 
+var fs = require('fs'),
+    PDFParser = require("pdf2json");
+
+app.get('/timkiem/:da/:key', (req, res) => {
+    var da = req.params.da,
+        key = req.params.key;
+    pool.connect((err, client, release) => {
+        if (err) {
+            return console.error('Error acquiring client', err.stack);
+        }
+        client.query('SELECT tendetai,uploadby,id,star FROM ' + da + ' WHERE hoanthanh = true ORDER BY id ASC ', (err, result) => {
+            release();
+            if (err) {
+                res.end();
+                return console.error('Error executing query', err.stack)
+            }
+            var arrResult = [];
+            (async function() {
+                await result.rows.forEach((data, index) => {
+                    var pdfParser = new PDFParser(this, 1);
+                    var pdfFilePath;
+                    if (data.id < 1000) {
+                        pdfFilePath = __dirname + "/uploads/da1/" + data.uploadby + "da1.pdf";
+                    } else if (data.id < 2000) {
+                        pdfFilePath = __dirname + "/uploads/da2/" + data.uploadby + "da2.pdf";
+                    } else if (data.id < 3000) {
+                        pdfFilePath = __dirname + "/uploads/da3/" + data.uploadby + "da3.pdf";
+                    } else {
+                        pdfFilePath = __dirname + "/uploads/datn/" + data.uploadby + "datn.pdf";
+                    }
+                    pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError));
+                    pdfParser.on("pdfParser_dataReady", pdfData => {
+                        data.content = pdfParser.getRawTextContent();
+                        if (pdfParser.getRawTextContent().indexOf(key) >= 0) arrResult.unshift(data);
+                        console.log(data);
+                    });
+                    pdfParser.loadPDF(pdfFilePath);
+                })
+                res.send({ arr: arrResult, key: key, usr: req._passport.session });
+            })();
+
+        });
+    });
+});
+
 app.get('/logout', (req, res) => {
     req.logout();
     req.session.destroy();
@@ -303,7 +348,7 @@ app.post("/doimatkhau/:id", urlencodedParser, (req, res) => {
                 }
                 res.end("Đổi mật khẩu thành công");
             })
-        } else if(id < 10000) {
+        } else if (id < 10000) {
             client.query("UPDATE giangvien SET password=" + newPass0 + " WHERE id=" + id, (err, result) => {
                 release();
                 if (err) {
@@ -312,7 +357,7 @@ app.post("/doimatkhau/:id", urlencodedParser, (req, res) => {
                 }
                 res.end("Đổi mật khẩu thành công");
             })
-        }else{
+        } else {
             client.query("UPDATE nvvanphong SET password=" + newPass0 + " WHERE id=" + id, (err, result) => {
                 release();
                 if (err) {
@@ -571,34 +616,59 @@ app.post('/giangvu/capnhatdoanmoi', (req, res) => {
         tS = req.body.timestart,
         tE = req.body.timeend;
     pool.connect((err, client, release) => {
-        client.query("SELECT id FROM " + da + " WHERE uploadby=" + id, (err, result) => {
+        client.query("SELECT id FROM sinhvien WHERE id=" + id, (err, result) => {
             release();
             if (err) {
                 res.end();
             }
-            if (result.rows[0] == null) {
-                client.query("SELECT doanhientai FROM sinhvien WHERE id=" + id, (err, result) => {
+            if (result.rows.length == 0) {
+                res.end("Sinh viên không tồn tại.");
+            } else {
+                client.query("SELECT id FROM " + da + " WHERE uploadby=" + id, (err, result) => {
                     release();
                     if (err) {
                         res.end();
                     }
-                    if (result.rows.doanhientai != null) res.end("Sinh viên đã có đồ án kỳ này");
-                    else {
-                        client.query("INSERT INTO " + da + "(uploadby,ky,timestart,timeend) VALUES(" + id + "," + ky + ",'" + tS + "','" + tE + "')");
-                        client.query("SELECT doan FROM sinhvien WHERE id=" + id, (err, result) => {
+                    if (result.rows[0] == null) {
+                        client.query("SELECT doanhientai FROM sinhvien WHERE id=" + id, (err, result) => {
                             release();
                             if (err) {
                                 res.end();
                             }
-                            var doan = result.rows[0].doan;
-                            doan.push(da);
-                            client.query("UPDATE sinhvien SET doan = '{" + doan + "}' WHERE id = " + id);
-                            client.query("UPDATE sinhvien SET doanhientai = '" + da + "' WHERE id = " + id);
-                            res.end("Cập nhật thành công");
-                        })
-                    }
-                });
-            } else res.end("Sinh viên đã có đồ án này");
+                            if (result.rows[0].doanhientai != null) res.end("Sinh viên đã có đồ án kỳ này");
+                            else {
+                                client.query("INSERT INTO " + da + "(uploadby,ky,timestart,timeend) VALUES(" + id + "," + ky + ",'" + tS + "','" + tE + "')", (err, result) => {
+                                    release();
+                                    if (err) {
+                                        res.end();
+                                    };
+                                    client.query("SELECT doan FROM sinhvien WHERE id=" + id, (err, result) => {
+                                        release();
+                                        if (err) {
+                                            res.end();
+                                        }
+                                        var doan = result.rows[0].doan;
+                                        doan.push(da);
+                                        client.query("UPDATE sinhvien SET doan = '{" + doan + "}' WHERE id = " + id, (err, result) => {
+                                            release();
+                                            if (err) {
+                                                res.end();
+                                            };
+                                            client.query("UPDATE sinhvien SET doanhientai = '" + da + "' WHERE id = " + id, (err, result) => {
+                                                release();
+                                                if (err) {
+                                                    res.end();
+                                                };
+                                            })
+                                        })
+                                        res.end("Cập nhật thành công");
+                                    })
+                                })
+                            }
+                        });
+                    } else res.end("Sinh viên đã có đồ án này");
+                })
+            }
         })
     })
 })
@@ -783,16 +853,16 @@ app.get("/da/:da/xemchitiet/:id", (req, res) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query("SELECT * FROM " + da + " WHERE id = "+id, (err, result) => {
+        client.query("SELECT * FROM " + da + " WHERE id = " + id, (err, result) => {
             release();
             if (err) {
                 res.end();
                 return console.error('Error executing query', err.stack)
             }
-            res.render('doan/view-info',{data:result.rows[0], usr: req._passport.session});
+            res.render('doan/view-info', { data: result.rows[0], usr: req._passport.session });
         })
     })
-}); 
+});
 
 /* ajax */
 

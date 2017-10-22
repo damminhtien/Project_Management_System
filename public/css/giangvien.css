@@ -1,0 +1,101 @@
+*{
+	padding: 0;
+	margin: 0;
+}	
+
+.text-center{
+	margin: 20px;
+}
+
+#wallpaper{
+	width: 100%;
+	background-color: grey;
+	color: white;
+	background: url('https://cdn.dribbble.com/users/903684/screenshots/2392335/background-animation.gif');
+  	overflow: hidden;
+}
+
+
+
+#ava{
+	padding-top: 10px;
+	display: block;
+    margin: 0 auto;
+    height: 20vmin;
+    width: 20vmin;
+}
+
+.container{
+	padding: 0;
+	margin: auto;
+	width: 100%;
+}
+
+.col-md-3{
+	background-size: cover;
+	padding: 0;
+	padding-left: 15px;
+	background-color: #cccccc;
+	height: 100%;
+}
+
+.col-md-9{
+	background-color: #f4426b;
+	padding: 0;
+	color: white;
+	font-size: 14px;
+	letter-spacing: 1px;
+	min-height: 800px;
+}
+
+nav.navbar.navbar-inverse{
+	margin: 0;
+}
+
+.container-fluid{
+	margin: 0;	
+}
+
+table{
+	width: auto;	
+}
+
+#table-right td{
+	height: 60px;
+	margin: auto;
+	padding-top: 15px;
+	text-align: center;
+	font-size: 16px;
+}
+
+#table-right th{
+	text-align: center;
+	background-color: #39353d;
+	color: white;
+	font-size: 16px;
+	letter-spacing: 1px;
+}
+
+#table-right tr:hover td{
+	background-color: #e51444;
+	transition: 0.5s;
+}
+
+#table-right tr:hover tr{
+	border: 1px solid black;
+}
+
+#table-left .theader{
+	background-color: #39353d;
+	color: white;
+}
+
+#table-left tr:hover td{
+	background-color: #e5093b;
+	color: white; 
+	transition: 0.5s;
+}
+
+a:hover{
+	text-decoration: none;
+}

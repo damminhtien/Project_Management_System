@@ -1,0 +1,48 @@
+<%include ../header-for-all%>
+<link rel="stylesheet" type="text/css" href="./css/trangchu.css">
+<style type="text/css">
+	th,td{
+		padding: 20px;
+	}
+</style>
+<body>
+	<%include ../home/navbar%>
+	<div id="div_name_web">
+        <div class="container">
+                <img class="img-responsive img" src="./images/logo_soict.png" alt="logo_soict.png" width="50vmin">
+            <h1 class="text-center">HỆ THỐNG QUẢN LÝ ĐỒ ÁN</h1>
+        </div>
+    </div>
+    <div id="div_search_tool">
+            <h4 class="text-center" style="margin: 20px;">KẾT QUẢ TÌM KIẾM CHO <span class="alert-success"><%=key%></span></h4>     
+    </div>
+    <div class="container">
+    	<div class="rows">
+    		<div class="col-md-8 table">
+				<table class="table-responsive table-striped" border="1" width="100%">
+					<caption>Kết quả chính xác</caption>
+					<thead>
+						<tr class="success">
+							<th>STT</th>
+							<th>Tên đề tài</th>
+							<th>Tác giả</th>
+							<th>Nội dung</th>
+							<th>Xem</th>
+						</tr>
+					</thead>
+					<tbody>
+						<%arr.forEach(function(data,index){%>
+						<tr>
+							<td><%=index+1%></td>
+							<td><%=data.tendetai%></td>
+							<td><%=data.uploadby%></td>
+							<td><%=data.content%></td>
+							<td><a href="/da/da/xemchitiet/id">Xem</a></td>
+						</tr>
+						<%})%>
+					</tbody>
+				</table>
+			</div>
+    	</div>
+    </div>
+</body>

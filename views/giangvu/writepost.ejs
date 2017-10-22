@@ -1,0 +1,51 @@
+<%include ../header-for-all%>
+    <script src='/js/tinymce/js/tinymce/tinymce.min.js'></script>
+    <script src='/js/tinymce/js/tinymce/jquery.tinymce.min.js'></script>
+    <script>
+    tinymce.init({
+        selector: '#mytextarea',
+        height: 500,
+        theme: 'modern',
+        plugins: 'print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount imagetools contextmenu colorpicker textpattern help code',
+        toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | image code',
+        image_advtab: true,
+        templates: [
+            { title: 'Test template 1', content: 'Test 1' },
+            { title: 'Test template 2', content: 'Test 2' }
+        ],
+        content_css: [
+            '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i'
+        ]
+    });
+    </script>
+
+    <body>
+        <form method="post" accept-charset="utf-8" enctype="multipart/form-data" class="form-horizontal">
+            <div class="form-group">
+                <label class="control-label col-sm-2">Tiêu đề:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="txtTieude" placeholder="Tiêu đề...">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Tóm tắt:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="txtTomtatnoidung" placeholder="Tóm tắt">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Nội dung:</label>
+                <div class="col-sm-10">
+                    <textarea id="mytextarea" name="txtNoidung" placeholder="Nội dung chinh..." class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <input type="file" name="ava">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-success" class="form-control">Đăng bài</button></div>
+            </div>
+        </form>
+    </body>

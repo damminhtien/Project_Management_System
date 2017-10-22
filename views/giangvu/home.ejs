@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hệ thống quản lý đồ án</title>
+    <link rel="SHORTCUT ICON" href="./images/SoICT_ logo.ico" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./css/giangvu.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container animated fadeInDown" id="wallpaper">
+        <div class="row">
+            <img src="https://i.pinimg.com/736x/7f/79/6d/7f796d57218d9cd81a92d9e6e8e51ce4--free-avatars-online-profile.jpg" alt="ava" id="ava" class="img-circle img-responsive">
+            <h1 class="text-center"><%= usr.ten%></h1>
+        </div>
+    </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 ">
+                <div id="navbar">
+                    <nav class="navbar navbar-inverse animated fadeInRight">
+                        <div class="container-fluid">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                                <a class="navbar-brand" href="../"><span class="glyphicon glyphicon-home"></span> Trang chủ</a>
+                            </div>
+                            <div class="collapse navbar-collapse" id="myNavbar">
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li><a href="../logout"><span class="glyphicon glyphicon-log-in"></span> Đăng xuất</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+                <div class="table-responsive" id="table-right">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td><a href="giangvu/pheduyetdoan" title="Phê duyệt nguyện vọng đồ án"><span class="glyphicon glyphicon-signal"></span> Phê duyệt nguyện vọng đồ án</a></td>
+                            </tr>
+                            <tr>
+                                <td><a href="giangvu/capnhatdoanmoi" title="Cập nhật đồ án mới"><span class="glyphicon glyphicon-file"></span> Cập nhật đồ án mới</a></td>
+                            </tr>
+                            <tr>
+                                <td><a href="giangvu/capnhatdoancu" title="Cập nhật đồ án cũ"><span class="glyphicon glyphicon-list-alt"></span> Cập nhật đồ án cũ</a></td>
+                            </tr>
+                            <tr>
+                                <td><a href="baiviet/viet/byid=<%=usr.id%>" title="Viết bài"><span class="glyphicon glyphicon-upload"></span> Đăng thông báo</a></td>
+                            </tr>
+                            <tr>
+                                <td><a href="/baiviet/sua" title="Sửa bài"><span class="glyphicon glyphicon-wrench"></span> Sửa thông báo</a></td>
+                            </tr>
+                            <tr>
+                                <td><a href="/giangvu/taogiangvien" title="Tạo tài khoản giảng viên"><span class="glyphicon glyphicon-user"></span> Tạo giảng viên mới</a></td>
+                            </tr>
+                            <tr>
+                                <td><a href="/giangvu/taosinhvien" title="Tạo tài khoản sinh viên"><span class="glyphicon glyphicon-user"></span> Tạo sinh viên mới</a></td>
+                            </tr>
+                            <tr>
+                                <td><a href="/doimatkhau/<%=usr.id%>" title="Đổi mật khẩu"><span class="glyphicon glyphicon-cog"></span> Đổi mật khẩu</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="googleCalendar">
+                    <iframe src="https://calendar.google.com/calendar/embed?title=SOICT%20CALENDAR&amp;showCalendars=0&amp;height=100&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=8d3fc8l9g04n7r9im45fsn08ak%40group.calendar.google.com&amp;color=%238D6F47&amp;ctz=Asia/Saigon" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./js/giangvien.js"></script>
+</body>

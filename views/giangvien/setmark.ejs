@@ -1,0 +1,31 @@
+<%include ../header-for-all%>
+<style type="text/css" media="screen">
+body {
+    background: radial-gradient(ellipse at bottom, #FD2B64 0%, #090a0f 100%);
+  	overflow: hidden;
+}
+
+div.container {
+    width: 50vw;
+    height: 100vh;
+    padding-top: 20vh;
+    color: white;
+}
+</style>
+<body>
+	<div class="container">
+		<form method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded" class="form-horizontal">
+            <div class="form-group">
+                <label class="control-label col-sm-2">Cho điểm :</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="txtDiem">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <input type="submit" name="btnChange" value="Cập nhật" class="btn btn-success">
+                </div>
+            </div>
+        </form>
+	</div>
+</body>

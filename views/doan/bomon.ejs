@@ -1,0 +1,64 @@
+<%include ../header-for-all%>
+<link rel="stylesheet" type="text/css" href="./css/trangchu.css">
+<style type="text/css">
+	th,td{
+		padding: 20px;
+	}
+</style>
+<script type="text/javascript">
+	$('document').ready(function(){
+			$('#navHome').removeClass('active');
+			$('#nav<%=bomon%>').addClass('active');	
+	});
+</script>
+<body>
+	<%include ../home/navbar%>
+	<div id="div_name_web">
+        <div class="container">
+                <img class="img-responsive img" src="./images/logo_soict.png" alt="logo_soict.png" width="50vmin">
+            <h1 class="text-center">HỆ THỐNG QUẢN LÝ ĐỒ ÁN</h1>
+        </div>
+    </div>
+	<div id="div_search_tool">
+            <h4 class="text-center" style="margin: 20px;">TÌM KIẾM TÀI LIỆU</h4>
+            <form method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded" >
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" id="inputSearch" name="key">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="submit" id="btnSearch">
+                            <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8 table">
+				<table class="table-responsive table-striped" border="1" width="100%">
+					<caption class="text-center">Đồ án bộ môn <%=bomon%></caption>
+					<thead>
+						<tr>
+							<th>STT</th>
+							<th>Tên đề tài</th>
+							<th>Tác giả</th>
+							<th>Star</th>
+							<th>Xem</th>
+						</tr>
+					</thead>
+					<tbody>
+						<%da.forEach(function(data,index){%>
+						<tr>
+							<td><%=index+1%></td>
+							<td><%=data.tendetai%></td>
+							<td><%=data.uploadby%></td>
+							<td><%=data.star%></td>
+							<td><a href="/da/da/xemchitiet/<%=data.id%>">Xem</a></td>
+						</tr>
+						<%})%>
+					</tbody>
+				</table>
+			</div>	
+		</div>
+	</div>
+</body>

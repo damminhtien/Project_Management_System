@@ -1,0 +1,59 @@
+<%include header-for-all%>
+<style type="text/css" media="screen">
+body {
+    background: #9830b2;
+}
+
+div.container {
+    width: 50vw;
+    height: 100vh;
+    padding-top: 20vh;
+    color: white;
+}
+</style>
+<body>
+	<a href="../../sinhvien"><button class="btn btn-primary"><span class="glyphicon glyphicon-chevron-left"></span></button></a>
+	<div class="container">
+		<h2 class="text-right">Đồ án hiện tại của bạn</h2>
+		<h3>
+			<% if (daht == 'da1') { -%>
+				<span><u>Đồ án 1</u></span>
+			<% } else if(daht == 'da2'){ -%>
+				<span><u>Đồ án 2</u></span>
+			<% } else if(daht == 'da3'){ -%>
+				<span><u>Đồ án 3</u></span>
+			<% } else if(daht == 'datn'){ -%>
+				<span><u>Đồ án tốt nghiệp</u></span>
+			<% } -%>
+		</h3>
+		<h5>Bắt đầu: <%=da.timestart%></h5>
+		<h5>Kết thúc: <%=da.timeend%></h5>
+		<h3 class="alert-success text-right">NỘP BÀI</h3>
+		<form method="post" accept-charset="utf-8" enctype="multipart/form-data" class="form-horizontal">
+                <input type="hidden" name="da" value="<%=daht%>">
+                <input type="hidden" name="id" value="<%=da.uploadby%>">
+                <div class="form-group">
+                    <label class="control-label col-sm-2">Tên đề tài:</label>
+                    <div class="col-sm-10">
+                    	<input type="text" class="form-control" name="tendetai" placeholder="Nhập tên...">	
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2">Ghi chú:</label>
+                    <div class="col-sm-10">
+                    	<textarea name="ghichu" rows="5" placeholder="Nhập ghi chú ..." class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                	<div class="col-sm-offset-2 col-sm-10">
+						<input type="file" name="file" placeholder="Tải tệp lên">
+                	</div>
+                </div>
+                <div class="form-group">
+                	<div class="col-sm-offset-2 col-sm-10">
+                		<button type="submit" class="btn btn-success">Gửi bài</button>	
+                	</div>
+                </div>
+			</div>
+		</form>
+</body>

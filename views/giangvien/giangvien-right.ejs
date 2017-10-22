@@ -1,0 +1,87 @@
+<div class="col-md-9">
+    <nav class="navbar navbar-inverse animated fadeInRight">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../"><span class="glyphicon glyphicon-home"></span> Trang chủ</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#"><span class="glyphicon glyphicon-certificate"></span> Thông tin đồ án</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="../logout"><span class="glyphicon glyphicon-log-in"></span> Đăng xuất</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="table-right" class="table-responsive animated bounceInUp">
+        <table class="table table-bordered" id="thongtindoan">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên đề tài</th>
+                    <th>View</th>
+                    <th>Cho điểm</th>
+                    <th>Sinh viên</th>
+                    <th>Ghi chú</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% da.forEach(function(data,index){%>
+                <%if(data.tendetai == null){%>
+                <tr style="background: #f2c1c7;">
+                        <td><%=index+1%></td>
+                    <%if(data.id < 1000){%>
+                        <td>Chưa có (đồ án 1)</td>
+                        <td>Chưa có</td>
+                        <td><a href="giangvien/chodiem/da1/<%=data.uploadby%>" title="Cho Điểm">Link</a></td>
+                    <%}else if(data.id < 2000){%>
+                        <td>Chưa có (đồ án 2)</td>
+                        <td>Chưa có</td>
+                        <td><a href="giangvien/chodiem/da2/<%=data.uploadby%>" title="Cho Điểm">Link</a></td>
+                    <%}else if(data.id < 3000){%>
+                        <td>Chưa có (đồ án 3)</td>
+                        <td>Chưa có</td>
+                        <td><a href="giangvien/chodiem/da3/<%=data.uploadby%>" title="Cho Điểm">Link</a></td>
+                    <%}else{%>
+                        <td>Chưa có (đồ án tốt nghiệp)</td>
+                        <td>Chưa có</td>
+                        <td><a href="giangvien/chodiem/datn/<%=data.uploadby%>" title="Cho Điểm">Link</a></td>
+                    <%}%>
+                        <td><%=data.uploadby%></td>
+                        <td>Không có</td>
+                </tr>
+                <%}else{%>
+                <tr>
+                        <td><%=index+1%></td>
+                    <%if(data.id < 1000){%>
+                        <td><%=data.tendetai%> (đồ án 1)</td>
+                        <td><a href="../da1/byid=<%=data.uploadby%>" title="Xem">View</a></td>
+                        <td><a href="giangvien/chodiem/da1/<%=data.uploadby%>" title="Cho Điểm">Link</a></td>
+                    <%}else if(data.id < 2000){%>
+                        <td><%=data.tendetai%> (đồ án 2)</td>
+                        <td><a href="../da2/byid=<%=data.uploadby%>" title="Xem">View</a></td>
+                        <td><a href="giangvien/chodiem/da1/<%=data.uploadby%>" title="Cho Điểm">Link</a></td>
+                    <%}else if(data.id < 3000){%>
+                        <td><%=data.tendetai%> (đồ án 3)</td>
+                        <td><a href="../da3/byid=<%=data.uploadby%>" title="Xem">View</a></td>
+                        <td><a href="giangvien/chodiem/da1/<%=data.uploadby%>" title="Cho Điểm">Link</a></td>
+                    <%}else{%>
+                        <td><%=data.tendetai%> (đồ án tốt nghiệp)</td>
+                        <td><a href="../datn/byid=<%=data.uploadby%>" title="Xem">View</a></td>
+                        <td><a href="giangvien/chodiem/da1/<%=data.uploadby%>" title="Cho Điểm">Link</a></td>
+                    <%}%>
+                        <td><%=data.uploadby%></td>
+                        <td><%=data.ghichu%></td>
+                </tr>
+                <%}%>
+                <%})%>
+            </tbody>
+        </table>
+    </div>
+</div>

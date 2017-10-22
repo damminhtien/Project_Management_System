@@ -1,0 +1,106 @@
+<%include ../header-for-all%>
+    <style type="text/css" media="screen">
+    div.container {
+        width: 50vw;
+        padding-bottom: 5vh;
+        padding-top: 5vh;
+    }
+    </style>
+    <script src="/js/modify-project.js" type="text/javascript" charset="utf-8" async defer></script>
+    <body>
+        <div id="navbar">
+            <nav class="navbar navbar-inverse animated fadeInRight">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="../"><span class="glyphicon glyphicon-home"></span> Trang chủ</a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="myNavbar">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="../logout"><span class="glyphicon glyphicon-log-in"></span> Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="container">
+            <div class="row">
+                <form method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2 alert-success">MSSV:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="mssv" placeholder="Mã số sinh viên...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="sel1" class="control-label col-sm-2 alert-success">Loại đồ án:</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="sel1" name="da">
+                                <option value="da1">Đồ án 1</option>
+                                <option value="da2">Đồ án 2</option>
+                                <option value="da3">Đồ án 3</option>
+                                <option value="datn">Đồ án tốt nghiệp</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">Kỳ:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="ky" placeholder="Học kỳ...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">Tên đồ án:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="tendetai" placeholder="Tên đồ án...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">Giảng viên:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="huongdan" placeholder="Giảng viên...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">Thời gian bắt đầu đồ án:</label>
+                        <div class="col-sm-10">
+                            <input type="date" name="timestart" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">Thời gian kết thúc đồ án:</label>
+                        <div class="col-sm-10">
+                            <input type="date" name="timeend" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">Star:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="star" placeholder="Star">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">Điểm:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="diem" placeholder="Điểm">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">Ghi chú:</label>
+                        <div class="col-sm-10">
+                            <textarea name="ghichu" rows='5' class="form-control" placeholder="Ghi chú"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <input type="submit" name="btnChange" value="Cập nhật" class="btn btn-success" disabled>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>

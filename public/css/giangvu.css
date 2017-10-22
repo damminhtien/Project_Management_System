@@ -1,0 +1,105 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+h1.text-center {
+    margin: 40px;
+    font-family: 'Lobster', cursive;
+}
+
+#wallpaper {
+    width: 100%;
+    color: white;
+    background: #616775;
+    overflow: hidden;
+    height: 35vh;
+}
+
+
+
+#ava {
+    padding-top: 10px;
+    display: block;
+    margin: 0 auto;
+    height: 20vmin;
+    width: 20vmin;
+}
+
+.container {
+    padding: 0;
+    margin: auto;
+    width: 100%;
+}
+
+.col-md-8 {
+    background-size: cover;
+    padding: 0;
+    padding-left: 15px;
+    background: #fff;
+    height: 100vh;
+}
+
+.col-md-4 {
+    background-color: #5891fc;
+    padding: 0;
+    color: white;
+    font-size: 14px;
+    letter-spacing: 1px;
+    min-height: 100vh;
+}
+
+nav.navbar.navbar-inverse {
+    margin: 0;
+}
+
+.container-fluid {
+    margin: 0;
+}
+
+table {
+    width: auto;
+}
+
+#table-right td {
+    height: 60px;
+    margin: auto;
+    padding-top: 15px;
+    padding-left: 35px;
+    font-size: 16px;
+    color: black;
+    border: 1px solid black;
+    text-decoration: none;
+}
+
+#table-right tr:hover td {
+    font-size: 22px;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+#table-right tr:hover tr {
+    border: 1px solid black;
+}
+a{
+    color: black;
+}
+
+a:hover {
+    text-decoration: none;
+    color: black;
+}
+
+.googleCalendar {
+    position: relative;
+    height: 0;
+    width: 100%;
+    padding-bottom: 100%;
+}
+
+.googleCalendar iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}

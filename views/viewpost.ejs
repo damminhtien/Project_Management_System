@@ -1,0 +1,77 @@
+<%if(thongbao != null){%>
+<%include header-for-all%>
+    <link rel="stylesheet" href="./css/trangchu.css">
+    <body>
+        <div id="div_navbar">
+            <% include home/navbar %>
+        </div>
+        <div id="div_name_web">
+            <div class="container" style="margin-bottom: 50px;margin-top: 30px;">
+                <img class="img-responsive img" src="./images/logo_soict.png" alt="logo_soict.png" width="50vmin">
+                <h1 class="text-center">HỆ THỐNG QUẢN LÝ ĐỒ ÁN</h1>
+            </div>
+        </div>
+        <div class="container" style="line-height: 25px;">
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h4 class="panel-title"><span id="postTitle">Nội dung bài viết<span style="float: right;"> id : <%= thongbao.id %></span></span> </h4>
+                        </div>
+                        <div class="panel-body text-justify" style="min-height: 50vh;padding-right: 50px;">
+                            <h1 class="text-center text-primary" style="margin-bottom: 50px;margin-top: 30px;"><%=thongbao.tieude%></h1>
+                            <h5 class="text-justify text-info" style="margin-bottom: 50px;margin-top: 30px;"><strong><%=thongbao.tomtatnoidung%></strong></h5>
+                            <div id="noidunghtml" style="display: none;">
+                                <%=thongbao.noidung%>
+                            </div>
+                            <div id="noidung">
+                                
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <em> Chia sẻ : </em>
+                            <button class="btn btn-primary"><span class="fa fa-facebook"> Facebook </span></button>
+                            <button class="btn btn-info"><span class="fa fa-twitter"> Twitter </span></button>
+                            </button>
+                            <em> Ghim : </em>
+                            <button class="btn btn-danger"><span class="fa fa-pinterest-p"> Pinterest </span></button>
+                            <div style="float: right;">
+                            	<a href="/baiviet/xem/<%=parseInt(thongbao.id)-1%>" title="Bài cũ"><button class="btn"><span class="glyphicon glyphicon-triangle-left"></span></button></a>
+                            	<a href="/baiviet/xem/<%=parseInt(thongbao.id)+1%>" title="Bài mới"><button class="btn"><span class="glyphicon glyphicon-triangle-right"></span></button></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Thông tin bài viết</h4>
+                        </div>
+                        <div class="panel-body">
+                            <span class="glyphicon glyphicon-eye-open"></span> :
+                            <span id="postView"><%= thongbao.luotxem %></span>
+                            <br/>
+                            <span class="glyphicon glyphicon-time"></span> :
+                            <span id="postDate"><%= thongbao.ngaygioupload %></span>
+                            <br/>
+                            <span class="glyphicon glyphicon-tag"></span> :
+                            <span id="postTag">tag1, tag2</span>
+                        </div>
+                        <div class="panel-footer">
+                            <img src="./images/<%=thongbao.anhdaidien%>" width="100%">
+                            <div class="googleCalendar">
+                                <iframe src="https://calendar.google.com/calendar/embed?title=SOICT%20CALENDAR&amp;showCalendars=0&amp;height=100&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=8d3fc8l9g04n7r9im45fsn08ak%40group.calendar.google.com&amp;color=%238D6F47&amp;ctz=Asia/Saigon" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="div_my_footer" class="container">
+            <% include home/footer %>
+        </div>
+    </body>
+    <script src="/js/viewpost.js" type="text/javascript" charset="utf-8" async defer></script>
+<%}else{%>
+Không tồn tại bài viết 
+<%}%>

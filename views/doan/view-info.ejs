@@ -1,0 +1,61 @@
+<%include ../header-for-all%>
+    <script src="/js/view-info.js" type="text/javascript" charset="utf-8" async defer></script>
+
+    <body>
+        <%include ../home/navbar%>
+            <div id="div_name_web" style="padding-bottom: 20px;">
+                <div class="container">
+                    <img class="img-responsive img" src="./images/logo_soict.png" alt="logo_soict.png" width="50vmin" style="display: inline;float: right;">
+                    <h2 class="text-center">HỆ THỐNG QUẢN LÝ ĐỒ ÁN</h2>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="panel panel-primary">
+                        	<div class="panel-heading">
+                        		
+                        	</div>
+                            <div class="panel-body">
+                            	<%var id = data.id; 
+                            	if(id<1000){%>
+                                <iframe src="./da1/byid=<%=data.uploadby%>" width="100%" height="500px"></iframe>
+                                <%}else if(id<2000){%>
+                                <iframe src="./da2/byid=<%=data.uploadby%>" width="100%" height="500px"></iframe>
+                                <%}else if(id<3000){%>
+                                <iframe src="./da3/byid=<%=data.uploadby%>" width="100%" height="500px"></iframe>
+                                <%}else{%>
+                                <iframe src="./datn/byid=<%=data.uploadby%>" width="100%" height="500px"></iframe>
+                                <%}%>
+                            </div>
+                            <div class="panel-footer">
+                            
+                          
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                    	<div class="panel panel-info">
+                        	<div class="panel-heading">
+                        		Thông tin tổng quan
+                        	</div>
+                            <div class="panel-body">
+                                <p>Tên đề tài : <%=data.tendetai%></p>
+                                <p>Sinh viên : <%=data.uploadby%></p>
+                                <p>Giảng viên hướng dẫn : <%=data.huongdan%></p>
+                                <p>Thời gian tải lên : <%=data.timeupload%></p>
+                                <p>Điểm : <%=data.diem%></p>
+                                <p>Star : <%=data.star%></p>
+                                <p>Ghi chú : <%=data.ghichu%></p>
+                            </div>
+                            <div class="panel-footer">
+                            <button class="btn btn-primary"><span class="fa fa-facebook"> Facebook </span></button>
+                            <button class="btn btn-info"><span class="fa fa-twitter"> Twitter </span></button>
+                            </button>
+                            <button class="btn btn-danger"><span class="fa fa-pinterest-p"> Pinterest </span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </body>
