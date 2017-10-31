@@ -108,37 +108,32 @@ app.get('/timkiem/:da/:key', (req, res) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query('SELECT tendetai,uploadby,id,star FROM ' + da + ' WHERE hoanthanh = true ORDER BY id ASC ', (err, result) => {
+        client.query('SELECT tendetai,uploadby,id,star FROM ' + da + ' WHERE hoanthanh = true ORDER BY id ASC ', async(err, result) => {
             release();
             if (err) {
                 res.end();
                 return console.error('Error executing query', err.stack)
             }
             var arrResult = [];
-            (async function() {
-                await result.rows.forEach((data, index) => {
-                    var pdfParser = new PDFParser(this, 1);
-                    var pdfFilePath;
-                    if (data.id < 1000) {
-                        pdfFilePath = __dirname + "/uploads/da1/" + data.uploadby + "da1.pdf";
-                    } else if (data.id < 2000) {
-                        pdfFilePath = __dirname + "/uploads/da2/" + data.uploadby + "da2.pdf";
-                    } else if (data.id < 3000) {
-                        pdfFilePath = __dirname + "/uploads/da3/" + data.uploadby + "da3.pdf";
-                    } else {
-                        pdfFilePath = __dirname + "/uploads/datn/" + data.uploadby + "datn.pdf";
-                    }
-                    pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError));
-                    pdfParser.on("pdfParser_dataReady", pdfData => {
-                        data.content = pdfParser.getRawTextContent();
-                        if (pdfParser.getRawTextContent().indexOf(key) >= 0) arrResult.unshift(data);
-                        console.log(data);
-                    });
-                    pdfParser.loadPDF(pdfFilePath);
-                })
-                res.send({ arr: arrResult, key: key, usr: req._passport.session });
-            })();
-
+            result.rows.forEach((data, index) => {
+                var pdfParser = new PDFParser(this, 1);
+                var pdfFilePath;
+                if (data.id < 1000) {
+                    pdfFilePath = __dirname + "/uploads/da1/" + data.uploadby + "da1.pdf";
+                } else if (data.id < 2000) {
+                    pdfFilePath = __dirname + "/uploads/da2/" + data.uploadby + "da2.pdf";
+                } else if (data.id < 3000) {
+                    pdfFilePath = __dirname + "/uploads/da3/" + data.uploadby + "da3.pdf";
+                } else {
+                    pdfFilePath = __dirname + "/uploads/datn/" + data.uploadby + "datn.pdf";
+                }
+                pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError));
+                pdfParser.on("pdfParser_dataReady", (pdfData) => {
+                    console.log(pdfParser.getRawTextContent());
+                });
+                pdfParser.loadPDF(pdfFilePath);
+            })
+            res.send("Loading...");
         });
     });
 });
@@ -992,10 +987,20 @@ app.get('/:name/byid=:id', (req, res) => {
     var id = req.params.id,
         name = req.params.name;
     var filePath = "/uploads/" + name + "/" + id + name + ".pdf";
-    fs.readFile(__dirname + filePath, function(err, data) {
-        res.contentType("application/pdf");
-        res.end(data);
-    });
+    if (req.isAuthenticated()) {
+        fs.readFile(__dirname + filePath, function(err, data) {
+            res.contentType("application/pdf");
+            res.end(data);
+        })
+    } else {
+        var pdfParser = new PDFParser(this, 1);
+        pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError));
+        pdfParser.on("pdfParser_dataReady", (pdfData) => {
+            res.end(pdfParser.getRawTextContent());
+        });
+        pdfParser.loadPDF(__dirname + filePath);
+    }
+
 })
 
 /*giảng viên*/
