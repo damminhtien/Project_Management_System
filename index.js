@@ -103,18 +103,19 @@ var fs = require('fs'),
 
 app.get('/timkiem/:da/:key', (req, res) => {
     var da = req.params.da,
-        key = req.params.key;
+        key = req.params.key.replace(/%20/g," ");
     pool.connect((err, client, release) => {
         if (err) {
             return console.error('Error acquiring client', err.stack);
         }
-        client.query('SELECT tendetai,uploadby,id,star FROM ' + da + ' WHERE hoanthanh = true ORDER BY id ASC ', async(err, result) => {
+        client.query('SELECT tendetai,uploadby,id,star FROM ' + da + ' WHERE hoanthanh = true ORDER BY id DESC LIMIT 10', async(err, result) => {
             release();
             if (err) {
                 res.end();
                 return console.error('Error executing query', err.stack)
             }
             var arrResult = [];
+            var count = 0;
             result.rows.forEach((data, index) => {
                 var pdfParser = new PDFParser(this, 1);
                 var pdfFilePath;
@@ -127,13 +128,22 @@ app.get('/timkiem/:da/:key', (req, res) => {
                 } else {
                     pdfFilePath = __dirname + "/uploads/datn/" + data.uploadby + "datn.pdf";
                 }
-                pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError));
+                if(data == undefined) res.send(arrResult);
+                pdfParser.on("pdfParser_dataError", errData =>{
+                    console.error(errData.parserError);
+                    count++;
+                    if(count > 9) res.send(arrResult);
+                });
                 pdfParser.on("pdfParser_dataReady", (pdfData) => {
-                    console.log(pdfParser.getRawTextContent());
+                    count ++;
+                    console.log(count);
+                    if(count > 9) res.render("doan/search-advance",{arrResult:arrResult,key:key,usr: req._passport.session,bomon:null});
+                    var content = pdfParser.getRawTextContent(3,1).toLowerCase().replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a").replace(/\\|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\\r|\\n/g, ' ').replace(/đ/g, "d").replace(/đ/g, "d").replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y").replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u").replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ.+/g, "o").replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ.+/g, "e").replace(/ì|í|ị|ỉ|ĩ/g, "i");;
+                    data.content = content;
+                    if(content.indexOf(key) != -1) arrResult.push(data);
                 });
                 pdfParser.loadPDF(pdfFilePath);
             })
-            res.send("Loading...");
         });
     });
 });
@@ -996,7 +1006,7 @@ app.get('/:name/byid=:id', (req, res) => {
         var pdfParser = new PDFParser(this, 1);
         pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError));
         pdfParser.on("pdfParser_dataReady", (pdfData) => {
-            res.end(pdfParser.getRawTextContent());
+            res.end(pdfParser.getRawTextContent(5,0));
         });
         pdfParser.loadPDF(__dirname + filePath);
     }
@@ -1055,4 +1065,8 @@ app.get("/baiviet/laythongtin/id=:id", (req, res) => {
             res.send(result.rows);
         })
     })
+})
+
+app.get("/admin",(req, res)=>{
+	res.render("admin");
 })

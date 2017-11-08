@@ -22,6 +22,7 @@
 			<div class="col-md-8 table">
 				<table class="table-responsive table-striped" border="1" width="100%">
 					<caption>Kết quả chính xác</caption>
+					<a class="text-right alert-success" href="./timkiem/da/<%=key.replace(/\ /g,'%20')%>" id="search-advance">Tìm kiếm nâng cao cho <%=key%> </a>
 					<thead>
 						<tr class="success">
 							<th>STT</th>
@@ -38,7 +39,7 @@
 							<td><%=data.tendetai%></td>
 							<td><%=data.uploadby%></td>
 							<td><%=data.star%></td>
-							<td><a href="/da/da/xemchitiet/id">Xem</a></td>
+							<td><a href="/da/da/xemchitiet/<%=data.id%>">Xem</a></td>
 						</tr>
 						<%})%>
 					</tbody>
@@ -67,7 +68,7 @@
 							<td><%=data.tendetai%></td>
 							<td><%=data.uploadby%></td>
 							<td><%=data.star%></td>
-							<td><a href="/da/da/xemchitiet/id">Xem</a></td>
+							<td><a href="/da/da/xemchitiet/<%=data.id%>">Xem</a></td>
 						</tr>
 						<%})%>
 					</tbody>
@@ -96,7 +97,7 @@
 							<td><%=data.tendetai%></td>
 							<td><%=data.uploadby%></td>
 							<td><%=data.star%></td>
-							<td><a href="/da/da/xemchitiet/id">Xem</a></td>
+							<td><a href="/da/da/xemchitiet/<%=data.id%>">Xem</a></td>
 						</tr>
 						<%})%>
 					</tbody>
@@ -104,4 +105,11 @@
 			</div>	
 		</div>
 	</div>
+	<script type="text/javascript">
+		$("document").ready(()=>{
+			$("#search-advance").click(()=>{
+				alert("Vui lòng chờ vài giây ...")
+			})
+		})
+	</script>
 </body>
